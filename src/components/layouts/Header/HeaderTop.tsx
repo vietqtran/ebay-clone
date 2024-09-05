@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 import ReactCountryFlag from 'react-country-flag'
+import UserAuthAction from './UserAuthAction'
 
 type Props = {}
 
@@ -9,16 +10,7 @@ const HeaderTop = (props: Props) => {
       <div className="w-full whitespace-nowrap border-b-[1px] border-b-neutral-200 px-4 xl:px-0">
          <div className="container mx-auto flex w-full max-w-[1248px] items-center justify-between gap-10">
             <div className="flex h-8 items-center gap-6">
-               <div className="flex items-center gap-1 text-xs">
-                  <span>Hi!</span>
-                  <Link href={'/signin'} className="text-link">
-                     Sign in
-                  </Link>
-                  <span className="hidden md:block"> or </span>
-                  <Link className="text-link hidden md:block" href={'/signin'}>
-                     Register
-                  </Link>
-               </div>
+               <UserAuthAction />
                <div className="hidden text-xs md:block">
                   <Link href={'#'}>Daily Deals</Link>
                </div>
@@ -120,7 +112,7 @@ const HeaderTop = (props: Props) => {
                            fill="none"
                            xmlns="http://www.w3.org/2000/svg"
                         >
-                           <g clip-path="url(#clip0_1_92)">
+                           <g clipPath="url(#clip0_1_92)">
                               <path
                                  fillRule="evenodd"
                                  clipRule="evenodd"
