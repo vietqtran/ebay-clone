@@ -20,7 +20,7 @@ const HeaderBottom = (props: Props) => {
                   priority
                   src={'/images/logo.svg'}
                />
-               <button className="flex items-center gap-1.5 px-1.5 pr-3">
+               <button className="hidden md:flex items-center gap-1.5 px-1.5 pr-3">
                   <div className="leading-1 flex flex-col items-start gap-0 text-start text-xs text-[#707070]">
                      <span>Shop by</span> <span>category</span>
                   </div>
