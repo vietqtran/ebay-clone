@@ -10,12 +10,15 @@
       "format": "prettier --write 'src/**/*.{ts,tsx,js,jsx}'"
    },
    "dependencies": {
+      "@supabase/ssr": "^0.5.1",
+      "@supabase/supabase-js": "^2.45.3",
       "firebase": "^10.13.1",
       "next": "14.2.7",
       "prettier": "^3.3.3",
       "react": "^18",
       "react-country-flag": "^3.1.0",
-      "react-dom": "^18"
+      "react-dom": "^18",
+      "supabase": "^1.191.3"
    },
    "devDependencies": {
       "@types/node": "^20",
