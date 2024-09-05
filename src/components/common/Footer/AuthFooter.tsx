@@ -4,10 +4,10 @@ import React from 'react'
 type Props = {}
 
 const AuthFooter = (props: Props) => {
-  return (
-    <footer className="border-t-[1px] border-t-[#707070] w-full">
-        <div className='w-full grid place-items-center p-5'>
-        <div className="w-full text-center text-[#707070] text-[11px]">
+   return (
+      <footer className="border-t-[1px] border-t-[#707070] w-full">
+         <div className="w-full grid place-items-center p-5">
+            <div className="w-full text-center text-[#707070] text-[11px]">
                <span className="font-semibold text-black">
                   Copyright © 1995-2024 eBay Inc. All Rights Reserved.
                </span>
@@ -75,9 +75,9 @@ const AuthFooter = (props: Props) => {
                   Your Privacy Choices and AdChoice
                </Link>
             </div>
-        </div>
-    </footer>
-  )
+         </div>
+      </footer>
+   )
 }
 
 export default AuthFooter

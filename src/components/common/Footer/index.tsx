@@ -94,7 +94,7 @@ const Footer = (props: Props) => {
                         href={'#'}
                         className="text-[#707070] hover:underline hover:cursor-pointer"
                      >
-                        eBay's Blogs
+                        eBay&apos;s Blogs
                      </Link>
                      <Link
                         href={'#'}
