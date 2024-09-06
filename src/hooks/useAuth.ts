@@ -30,7 +30,13 @@ export const useAuth = () => {
       try {
          const response = await signInWithPopup(auth, facebookProvider)
          if (response.user) {
-            console.log(response.user)
+            const user: User = {
+               avatarUrl: response.user.photoURL ?? '',
+               email: response.user.email ?? '',
+               id: response.user.uid,
+               name: response.user.displayName ?? ''
+            }
+            dispatch(setUser(user))
          }
          throw new Error('Error signing in with Facebook')
       } catch (error) {

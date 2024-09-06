@@ -1,4 +1,6 @@
 import './globals.css'
+import 'swiper/css'
+import 'swiper/css/navigation'
 
 import { Inter } from 'next/font/google'
 import type { Metadata } from 'next'
