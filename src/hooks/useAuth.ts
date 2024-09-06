@@ -1,7 +1,7 @@
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { signInWithPopup } from 'firebase/auth'
 
 import { User } from '@/types/user'
-import { auth } from '@/utils/firebase'
+import { auth, facebookProvider, googleProvider } from '@/utils/firebase'
 import { setUser } from '@/stores/auth/authSlice'
 import { useAppDispatch } from './useRedux'
 
@@ -9,9 +9,8 @@ export const useAuth = () => {
    const dispatch = useAppDispatch()
 
    const signInWithGoogle = async () => {
-      const provider = new GoogleAuthProvider()
       try {
-         const response = await signInWithPopup(auth, provider)
+         const response = await signInWithPopup(auth, googleProvider)
          if (response.user) {
             const user: User = {
                avatarUrl: response.user.photoURL ?? '',
@@ -27,7 +26,20 @@ export const useAuth = () => {
       }
    }
 
+   const signInWithFacebook = async () => {
+      try {
+         const response = await signInWithPopup(auth, facebookProvider)
+         if (response.user) {
+            console.log(response.user)
+         }
+         throw new Error('Error signing in with Facebook')
+      } catch (error) {
+         console.error('Error signing in with Facebook', error)
+      }
+   }
+
    return {
-      signInWithGoogle
+      signInWithGoogle,
+      signInWithFacebook
    }
 }
