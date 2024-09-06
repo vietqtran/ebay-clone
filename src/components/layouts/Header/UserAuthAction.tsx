@@ -54,7 +54,7 @@ const UserAuthAction = (props: Props) => {
                   Sign in
                </Link>
                <span className="hidden md:block"> or </span>
-               <Link className="text-link hidden md:block" href={'/signin'}>
+               <Link className="text-link hidden md:block" href={'/register'}>
                   Register
                </Link>
             </>

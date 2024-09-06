@@ -35,7 +35,7 @@ export const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 const RegisterPersonal = (props: Props) => {
-   const { signInWithGoogle } = useAuth()
+   const { signInWithGoogle, signInWithFacebook } = useAuth()
    const form = useForm<FormData>({
       resolver: zodResolver(schema),
       defaultValues: {
@@ -55,11 +55,6 @@ const RegisterPersonal = (props: Props) => {
       <>
          <form
             onSubmit={form.handleSubmit(onSubmit)}
-            onKeyDown={e => {
-               if (e.key === 'Enter') {
-                  e.preventDefault()
-               }
-            }}
             className="flex flex-col gap-5"
          >
             <div className="flex items-start gap-5">
@@ -146,6 +141,11 @@ const RegisterPersonal = (props: Props) => {
                </p>
             </div>
             <button
+               onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                     e.preventDefault()
+                  }
+               }}
                type="submit"
                className={twMerge(
                   'flex h-12 items-center justify-center rounded-full cursor-not-allowed bg-[#c7c7c7]',
@@ -171,7 +171,11 @@ const RegisterPersonal = (props: Props) => {
             <div className="h-[1px] flex-1 bg-[#c7c7c7]"></div>
          </div>
          <div className="grid h-16 grid-cols-3 place-items-center gap-4">
-            <div className="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full border-[1px] border-[#c7c7c7] duration-75 ease-linear hover:bg-black/5">
+            <button
+               type="button"
+               onClick={signInWithFacebook}
+               className="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full border-[1px] border-[#c7c7c7] duration-75 ease-linear hover:bg-black/5"
+            >
                <Image
                   src={'/icons/facebook-color.svg'}
                   width={16}
@@ -180,7 +184,7 @@ const RegisterPersonal = (props: Props) => {
                   priority
                />
                <span className="text-sm font-semibold">Facebook</span>
-            </div>
+            </button>
             <button
                type="button"
                onClick={signInWithGoogle}
