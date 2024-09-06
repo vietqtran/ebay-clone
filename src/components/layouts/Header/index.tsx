@@ -7,7 +7,7 @@ type Props = {}
 
 const Header = (props: Props) => {
    return (
-      <header className="w-full border-b-[1px] border-b-neutral-200 pb-3">
+      <header className="z-10 w-full border-b-[1px] border-b-neutral-200 pb-3">
          <div className="flex size-full flex-col">
             <HeaderTop />
             <HeaderBottom />
