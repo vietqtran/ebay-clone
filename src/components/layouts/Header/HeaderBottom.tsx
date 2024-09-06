@@ -9,7 +9,7 @@ type Props = {}
 const HeaderBottom = (props: Props) => {
    const [searchValue, setSearchValue] = React.useState('')
    return (
-      <div className="border-b-[1px] border-b-neutral-200 px-4 pb-4 pt-3 xl:px-0">
+      <div className="px-4 pb-1.5 pt-3 xl:px-0">
          <div className="container mx-auto flex w-full max-w-[1248px] items-center gap-2">
             <div className="flex flex-shrink-0 items-center">
                <Image
@@ -20,7 +20,7 @@ const HeaderBottom = (props: Props) => {
                   priority
                   src={'/images/logo.svg'}
                />
-               <button className="hidden md:flex items-center gap-1.5 px-1.5 pr-3">
+               <button className="hidden items-center gap-1.5 px-1.5 pr-3 md:flex">
                   <div className="leading-1 flex flex-col items-start gap-0 text-start text-xs text-[#707070]">
                      <span>Shop by</span> <span>category</span>
                   </div>

@@ -26,6 +26,7 @@
       "redux": "^5.0.1",
       "redux-persist": "^6.0.0",
       "supabase": "^1.191.3",
+      "swiper": "^11.1.12",
       "tailwind-merge": "^2.5.2",
       "zod": "^3.23.8"
    },
