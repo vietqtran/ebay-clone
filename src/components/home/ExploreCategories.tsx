@@ -54,7 +54,7 @@ const ExploreCategories = (props: Props) => {
 
 const CategoryItem = () => {
    return (
-      <div className="flex h-[216px] w-[164px] flex-col items-center justify-between">
+      <div className="group flex h-[216px] w-[164px] flex-col items-center justify-between hover:cursor-pointer">
          <div className="aspect-square w-full">
             <Image
                width={500}
@@ -65,7 +65,9 @@ const CategoryItem = () => {
                alt="category"
             />
          </div>
-         <span className="font-semibold">Luxury</span>
+         <span className="font-semibold group-hover:underline group-hover:underline-offset-4">
+            Luxury
+         </span>
       </div>
    )
 }
