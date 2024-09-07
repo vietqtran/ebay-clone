@@ -1,14 +1,19 @@
+import ExploreCategories from './ExploreCategories'
+import HomeSlider from './Slider'
+import LastBanner from './LastBanner'
 import Link from 'next/link'
 import React from 'react'
-import HomeSlider from './Slider'
-import ExploreCategories from './ExploreCategories'
+import RecentlyView from './RecentlyView'
+import RecommendCategory from './RecommendCategory'
+import RecommendSeller from './RecommendSeller'
+import Searched from './Searched'
 
 interface Props {}
 
 const HomePage = (props: Props) => {
    return (
       <div className="w-full">
-         <div className="flex h-8 w-full items-center justify-center gap-3 whitespace-nowrap px-5 text-xs text-[#555]">
+         <div className="hide-scrollbar flex h-8 w-full items-center justify-start gap-3 overflow-auto whitespace-nowrap px-5 text-xs text-[#555] lg:justify-center">
             <Link href={'#'}>Explore (New!)</Link>
             <Link href={'#'}>Saved</Link>
             <Link href={'#'}>Electronics</Link>
@@ -23,7 +28,12 @@ const HomePage = (props: Props) => {
             <Link href={'#'}>Sell</Link>
          </div>
          <HomeSlider />
+         <RecentlyView />
+         <Searched />
          <ExploreCategories />
+         <RecommendSeller />
+         <RecommendCategory />
+         <LastBanner />
       </div>
    )
 }
