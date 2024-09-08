@@ -15,10 +15,8 @@ type Props = {
 const ChangeShipmentCountry = ({ handleClose }: Props) => {
    const dispatch = useAppDispatch()
    const { currentShippingCountry } = useAppSelector(state => state.country)
-
    const [countries, setCountries] = React.useState<ShippingCountry[]>([])
    const [isOpenDropdown, setIsOpenDropdown] = React.useState(false)
-
    const dropdownRef = useClickOutside(() => setIsOpenDropdown(false))
 
    useEffect(() => {
@@ -36,21 +34,6 @@ const ChangeShipmentCountry = ({ handleClose }: Props) => {
          )
       }
       fetchCountriesData()
-   }, [])
-
-   useEffect(() => {
-      const fetchCountryData = async (countryCode: string) => {
-         const response = await fetch(
-            `https://restcountries.com/v3.1/alpha/${countryCode}`
-         )
-         const data = (await response.json()) as CountryData[]
-         dispatch(
-            setCurrentShippingCountry({
-               currentShippingCountry: parseCountryData(data[0])
-            })
-         )
-      }
-      !currentShippingCountry && fetchCountryData('VN')
    }, [])
 
    const handleSelectCountry = (country: ShippingCountry) => {
