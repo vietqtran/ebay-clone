@@ -44,9 +44,8 @@ export const useAuth = () => {
                      ...user
                   })
                   .select('*')
-                  .single()
                if (error) throw new Error(error.message)
-               dispatch(setUser(data))
+               dispatch(setUser(data[0]))
             }
             push('/')
          }
@@ -78,9 +77,8 @@ export const useAuth = () => {
                      ...user
                   })
                   .select('*')
-                  .single()
                if (error) throw new Error(error.message)
-               dispatch(setUser(data))
+               dispatch(setUser(data[0]))
             }
             push('/')
          }
@@ -91,13 +89,9 @@ export const useAuth = () => {
 
    const loginWithCredentials = async (loginCredentials: LoginCredentials) => {
       try {
-         const { data, error } = await supabase
-            .from('users')
-            .select('*')
-
-            .single()
+         const { data, error } = await supabase.from('users').select('*')
          if (error) throw new Error(error.message)
-         const user = data as User
+         const user = data[0] as User
          const isPasswordMatch = await comparePassword(
             loginCredentials.password,
             user.hashed_password as string
@@ -137,9 +131,8 @@ export const useAuth = () => {
                hashed_password: passwordHash
             })
             .select('*')
-            .single()
          if (error) throw new Error(error.message)
-         dispatch(setUser(data))
+         dispatch(setUser(data[0]))
          push('/')
       } catch (error) {
          console.error('Error registering user', error)
@@ -154,9 +147,8 @@ export const useAuth = () => {
             .from('users')
             .select('*')
             .eq('email', email)
-            .single()
          if (error) throw new Error(error.message)
-         return data as User
+         return data[0] as User
       } catch (error) {
          console.error('Error finding user by email', error)
       }
@@ -171,9 +163,8 @@ export const useAuth = () => {
             })
             .eq('email', user.email)
             .select('*')
-            .single()
          if (error) throw new Error(error.message)
-         return data as User
+         return data[0] as User
       } catch (error) {
          console.error('Error updating user', error)
       }
