@@ -35,10 +35,7 @@ const SignInForm = (props: Props) => {
       }
    })
 
-   const onSubmit = (data: FormData) => {
-      console.log(form.formState.errors)
-      console.log(data)
-   }
+   const onSubmit = (data: FormData) => {}
 
    return (
       <div className="flex size-full flex-col items-center gap-3">
