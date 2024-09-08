@@ -1,9 +1,10 @@
 'use client'
 
-import React from 'react'
 import { Autoplay, Navigation } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
+
 import Image from 'next/image'
+import React from 'react'
 
 interface Props {}
 
@@ -26,10 +27,7 @@ const HomeSlider = (props: Props) => {
             id="home-slider"
             className="mySwiper relative size-full xl:rounded-xl"
          >
-            <div
-               style={{ boxShadow: 'rgba(0, 0, 0, 0.15) 0px 5px 15px 0px' }}
-               className="prev-home-slider absolute left-4 top-1/2 z-10 grid size-8 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white duration-75 ease-linear hover:scale-105 active:scale-95"
-            >
+            <div className="prev-home-slider absolute left-4 top-1/2 z-10 grid size-8 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-white shadow-popup duration-75 ease-linear hover:scale-105 active:scale-95">
                <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"

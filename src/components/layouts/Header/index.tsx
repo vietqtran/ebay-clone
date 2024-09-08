@@ -1,7 +1,6 @@
-import Link from 'next/link'
+import HeaderBottom from './Bottom'
+import HeaderTop from './Top'
 import React from 'react'
-import HeaderTop from './HeaderTop'
-import HeaderBottom from './HeaderBottom'
 
 type Props = {}
 

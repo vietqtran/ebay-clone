@@ -1,6 +1,7 @@
 import './globals.css'
 import 'swiper/css'
 import 'swiper/css/navigation'
+import 'simplebar-react/dist/simplebar.min.css'
 
 import { Inter } from 'next/font/google'
 import type { Metadata } from 'next'
@@ -28,6 +29,7 @@ export default function RootLayout({
       <html lang="en">
          <body className={inter.className}>
             <ReduxProvider>{children}</ReduxProvider>
+            <div id="portal"></div>
          </body>
       </html>
    )
