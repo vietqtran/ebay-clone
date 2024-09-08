@@ -1,28 +1,24 @@
-import { CountryData, parseCountryData } from '@/types/country'
 import React, { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux'
 
 import ChangeShipmentCountry from '@/components/modals/ChangeShipmentCountry'
 import ReactCountryFlag from 'react-country-flag'
 import { setCurrentShippingCountry } from '@/stores/country/countrySlice'
+import { useCountry } from '@/hooks/useCountry'
 
 type Props = {}
 
 const SelectShippingCountry = (props: Props) => {
    const dispatch = useAppDispatch()
+   const { getCountryByCode } = useCountry()
    const { currentShippingCountry } = useAppSelector(state => state.country)
    const [isOpenPortal, setIsOpenPortal] = React.useState(false)
 
    useEffect(() => {
       const fetchCountryData = async (countryCode: string) => {
-         const response = await fetch(
-            `https://restcountries.com/v3.1/alpha/${countryCode}`
-         )
-         const data = (await response.json()) as CountryData[]
+         const response = await getCountryByCode(countryCode)
          dispatch(
-            setCurrentShippingCountry({
-               currentShippingCountry: parseCountryData(data[0])
-            })
+            setCurrentShippingCountry({ currentShippingCountry: response })
          )
       }
       !currentShippingCountry && fetchCountryData('VN')

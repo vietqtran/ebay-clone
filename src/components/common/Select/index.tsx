@@ -38,7 +38,6 @@ const Input = React.forwardRef<HTMLSelectElement, InputProps>(
       const id = useId()
       const selectRef = React.useRef<HTMLSelectElement>(null)
       const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-         console.log(e.target.value)
          if (onChange) onChange(e)
          if (clearError && e.target.value) clearError()
       }
