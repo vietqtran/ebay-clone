@@ -4,7 +4,7 @@ import { User } from '@/types/user'
 
 interface AuthState {
    currentRegisterForm: 'personal' | 'business'
-   user: User | null
+   user: Omit<User, 'hashed_password'> | null
 }
 
 const initialState: AuthState = {
@@ -25,7 +25,10 @@ const authSlice = createSlice({
          return { ...state, ...action.payload }
       },
 
-      setUser(state, action: PayloadAction<User | null>) {
+      setUser(
+         state,
+         action: PayloadAction<Omit<User, 'hashed_password'> | null>
+      ) {
          return { ...state, user: action.payload }
       }
    }

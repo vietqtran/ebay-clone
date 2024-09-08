@@ -50,10 +50,7 @@ const RegisterBusiness = (props: Props) => {
       }
    })
 
-   const onSubmit = (data: FormData) => {
-      console.log(data)
-   }
-   console.log(form.formState.errors)
+   const onSubmit = (data: FormData) => {}
 
    return (
       <form

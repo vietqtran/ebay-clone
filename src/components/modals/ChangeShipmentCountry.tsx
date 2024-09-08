@@ -1,12 +1,13 @@
-import { CountryData, ShippingCountry, parseCountryData } from '@/types/country'
 import React, { useEffect } from 'react'
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux'
 
 import PortalWrapper from '../portal/PortalWrapper'
 import ReactCountryFlag from 'react-country-flag'
+import { ShippingCountry } from '@/types/country'
 import SimpleBar from 'simplebar-react'
 import { setCurrentShippingCountry } from '@/stores/country/countrySlice'
 import useClickOutside from '@/hooks/useClickOutside'
+import { useCountry } from '@/hooks/useCountry'
 
 type Props = {
    handleClose: () => void
@@ -14,6 +15,7 @@ type Props = {
 
 const ChangeShipmentCountry = ({ handleClose }: Props) => {
    const dispatch = useAppDispatch()
+   const { getAllCountries } = useCountry()
    const { currentShippingCountry } = useAppSelector(state => state.country)
    const [countries, setCountries] = React.useState<ShippingCountry[]>([])
    const [isOpenDropdown, setIsOpenDropdown] = React.useState(false)
@@ -21,17 +23,8 @@ const ChangeShipmentCountry = ({ handleClose }: Props) => {
 
    useEffect(() => {
       const fetchCountriesData = async () => {
-         const response = await fetch(
-            'https://restcountries.com/v3.1/all?fields=name,currencies,cca2'
-         )
-         const data = (await response.json()) as CountryData[]
-         setCountries(
-            data
-               .sort((a: CountryData, b: CountryData) =>
-                  a.name.common.localeCompare(b.name.common)
-               )
-               .map(parseCountryData)
-         )
+         const fetchedCountries = await getAllCountries()
+         setCountries(fetchedCountries)
       }
       fetchCountriesData()
    }, [])
@@ -79,9 +72,9 @@ const ChangeShipmentCountry = ({ handleClose }: Props) => {
                   className="size-4"
                >
                   <path
-                     fill-rule="evenodd"
+                     fillRule="evenodd"
                      d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z"
-                     clip-rule="evenodd"
+                     clipRule="evenodd"
                   />
                </svg>
 

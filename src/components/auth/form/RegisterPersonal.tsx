@@ -5,6 +5,7 @@ import Input from '@/components/common/Input'
 import Link from 'next/link'
 import Loader from '@/components/common/Loader'
 import React from 'react'
+import { RegisterPersonalCredentials } from '@/types/user'
 import _ from 'lodash'
 import { twMerge } from 'tailwind-merge'
 import { useAuth } from '@/hooks/useAuth'
@@ -14,11 +15,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 type Props = {}
 
 export const schema = z.object({
-   firstName: z
+   first_name: z
       .string()
       .min(1, 'Please enter your first name')
       .max(50, 'First name is too long'),
-   lastName: z
+   last_name: z
       .string()
       .min(1, 'Please enter your last name')
       .max(50, 'First name is too long'),
@@ -35,20 +36,31 @@ export const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 const RegisterPersonal = (props: Props) => {
-   const { signInWithGoogle, signInWithFacebook } = useAuth()
+   const {
+      signInWithGoogle,
+      signInWithFacebook,
+      isLoading,
+      registerPersonalWithCredentials
+   } = useAuth()
    const form = useForm<FormData>({
       resolver: zodResolver(schema),
       defaultValues: {
-         firstName: '',
-         lastName: '',
+         first_name: '',
+         last_name: '',
          email: '',
          password: ''
       }
    })
 
-   const onSubmit = (data: FormData) => {
-      console.log(form.formState.errors)
-      console.log(data)
+   const onSubmit = async (data: FormData) => {
+      const registerCredentials: RegisterPersonalCredentials = {
+         email: data.email,
+         first_name: data.first_name,
+         last_name: data.last_name,
+         password: data.password,
+         provider: 'email'
+      }
+      await registerPersonalWithCredentials(registerCredentials)
    }
 
    return (
@@ -59,35 +71,35 @@ const RegisterPersonal = (props: Props) => {
          >
             <div className="flex items-start gap-5">
                <Controller
-                  name="firstName"
+                  name="first_name"
                   control={form.control}
                   render={({ field }) => (
                      <Input
-                        {...form.register('firstName')}
+                        {...form.register('first_name')}
                         placeholder="First name"
-                        value={form.watch('firstName')}
-                        isError={!!form.formState.errors.firstName}
+                        value={form.watch('first_name')}
+                        isError={!!form.formState.errors.first_name}
                         errorMessage={
-                           form.formState.errors.firstName?.message ?? ''
+                           form.formState.errors.first_name?.message ?? ''
                         }
-                        clearError={() => form.clearErrors('firstName')}
+                        clearError={() => form.clearErrors('first_name')}
                         onChange={field.onChange}
                      />
                   )}
                />
                <Controller
-                  name="lastName"
+                  name="last_name"
                   control={form.control}
                   render={({ field }) => (
                      <Input
-                        {...form.register('lastName')}
+                        {...form.register('last_name')}
                         placeholder="Last name"
-                        value={form.watch('lastName')}
-                        isError={!!form.formState.errors.lastName}
+                        value={form.watch('last_name')}
+                        isError={!!form.formState.errors.last_name}
                         errorMessage={
-                           form.formState.errors.lastName?.message ?? ''
+                           form.formState.errors.last_name?.message ?? ''
                         }
-                        clearError={() => form.clearErrors('lastName')}
+                        clearError={() => form.clearErrors('last_name')}
                         onChange={field.onChange}
                      />
                   )}
@@ -152,17 +164,21 @@ const RegisterPersonal = (props: Props) => {
                   'bg-blue-600 active:scale-95 hover:bg-blue-800 duration-75 ease-linear cursor-pointer'
                )}
             >
-               <span className="text-sm font-semibold text-white">
-                  Create personal account
-               </span>
-               {/* <Loader
-                  style={{
-                     width: '20px',
-                     height: '20px',
-                     color: 'white',
-                     borderWidth: '2px'
-                  }}
-               /> */}
+               {!isLoading && (
+                  <span className="text-sm font-semibold text-white">
+                     Create personal account
+                  </span>
+               )}
+               {isLoading && (
+                  <Loader
+                     style={{
+                        width: '20px',
+                        height: '20px',
+                        color: 'white',
+                        borderWidth: '2px'
+                     }}
+                  />
+               )}
             </button>
          </form>
          <div className="mb-4 mt-6 flex items-center gap-3">

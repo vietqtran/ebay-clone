@@ -22,15 +22,16 @@ const UserAuthAction = (props: Props) => {
             >
                <div className="relative z-20 flex w-full items-center justify-start gap-4 p-4 before:absolute before:-top-4 before:left-0 before:z-10 before:h-5 before:w-full">
                   <Image
-                     className="ring-[#707070 size-14 rounded-full ring-1"
+                     className="size-14 rounded-full ring-1 ring-neutral-200"
                      width={100}
                      height={100}
-                     src={user?.avatarUrl ?? ''}
+                     src={user?.avatar_url ?? '/images/user.jpg'}
                      alt="avatar"
                   />
                   <div className="w-full flex-1 truncate">
                      <p className="overflow-hidden truncate text-ellipsis whitespace-nowrap text-sm font-semibold">
-                        {user?.name}
+                        {user?.name ??
+                           `${user?.first_name ?? ''} ${user?.last_name ?? ''}`}
                      </p>
                      <p className="block overflow-hidden truncate text-ellipsis whitespace-nowrap">
                         {user?.email}
@@ -60,7 +61,11 @@ const UserAuthAction = (props: Props) => {
             </>
          ) : (
             <div className="relative flex cursor-pointer items-center gap-1">
-               <span className="font-semibold">{user.name}</span>
+               <span className="font-semibold">
+                  {' '}
+                  {user?.name ??
+                     `${user?.first_name ?? ''} ${user?.last_name ?? ''}`}
+               </span>
                <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
