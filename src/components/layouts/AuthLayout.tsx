@@ -28,7 +28,7 @@ const AuthLayout = ({ children }: Props) => {
       <main className="flex size-full min-h-screen flex-col">
          <AuthHeader page={isSignIn ? 'signin' : 'register'} />
          <div className="container mx-auto max-w-screen-2xl flex-1">
-            <div className="flex size-full items-start justify-center">
+            <div className="flex size-full items-start justify-center pb-10">
                <div
                   className={twMerge(
                      'hidden h-[826px] w-[714px] pl-5 xl:block',

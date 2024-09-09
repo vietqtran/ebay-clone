@@ -26,11 +26,11 @@ export type RegisterPersonalCredentials = {
 }
 
 export type RegisterBusinessCredentials = {
+   user_id: string
+   description?: string
    business_name: string
-   business_email: string
-   password: string
    country: string
-   provider: AuthProvider
+   logo_url?: string
 }
 
 type AuthProvider = 'google' | 'facebook' | 'email'

@@ -1,30 +1,27 @@
 import { Controller, useForm } from 'react-hook-form'
 
 import Checkbox from '@/components/common/Checkbox'
-import Image from 'next/image'
 import Input from '@/components/common/Input'
 import Link from 'next/link'
-import Loader from '@/components/common/Loader'
 import React from 'react'
 import Select from '@/components/common/Select'
 import _ from 'lodash'
 import { twMerge } from 'tailwind-merge'
-import { useAuth } from '@/hooks/useAuth'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useAppDispatch } from '@/hooks/useRedux'
+import { setBusinessRegisterForm } from '@/stores/auth/authSlice'
+import { useAuth } from '@/hooks/useAuth'
+import Loader from '@/components/common/Loader'
 
 type Props = {}
 
 export const schema = z.object({
-   businessName: z
+   business_name: z
       .string()
       .min(1, 'Please enter your business name')
       .max(50, 'Business name is too long'),
-   lastName: z
-      .string()
-      .min(1, 'Please enter your last name')
-      .max(50, 'First name is too long'),
-   businessEmail: z
+   email: z
       .string()
       .min(1, 'Please enter your business email')
       .email('Invalid Business email address'),
@@ -38,19 +35,23 @@ export const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 const RegisterBusiness = (props: Props) => {
+   const dispatch = useAppDispatch()
+   const { registerBusinessStep1, isLoading } = useAuth()
    const [isAgreed, setIsAgreed] = React.useState(false)
    const form = useForm<FormData>({
       resolver: zodResolver(schema),
       defaultValues: {
-         businessName: '',
-         lastName: '',
-         businessEmail: '',
+         business_name: '',
+         email: '',
          password: '',
          country: ''
       }
    })
 
-   const onSubmit = (data: FormData) => {}
+   const onSubmit = async (data: FormData) => {
+      const { business_name, email, password, country } = data
+      await registerBusinessStep1(country, email, business_name, password)
+   }
 
    return (
       <form
@@ -68,35 +69,33 @@ const RegisterBusiness = (props: Props) => {
             plan to sell a large number of goods.
          </p>
          <Controller
-            name="businessName"
+            name="business_name"
             control={form.control}
             render={({ field }) => (
                <Input
-                  {...form.register('businessName')}
+                  {...form.register('business_name')}
                   placeholder="Business name"
-                  value={form.watch('businessName')}
-                  isError={!!form.formState.errors.businessName}
+                  value={form.watch('business_name')}
+                  isError={!!form.formState.errors.business_name}
                   errorMessage={
-                     form.formState.errors.businessName?.message ?? ''
+                     form.formState.errors.business_name?.message ?? ''
                   }
-                  clearError={() => form.clearErrors('businessName')}
+                  clearError={() => form.clearErrors('business_name')}
                   onChange={field.onChange}
                />
             )}
          />
          <Controller
-            name="businessEmail"
+            name="email"
             control={form.control}
             render={({ field }) => (
                <Input
-                  {...form.register('businessEmail')}
+                  {...form.register('email')}
                   placeholder="Business email"
-                  value={form.watch('businessEmail')}
-                  isError={!!form.formState.errors.businessEmail}
-                  errorMessage={
-                     form.formState.errors.businessEmail?.message ?? ''
-                  }
-                  clearError={() => form.clearErrors('businessEmail')}
+                  value={form.watch('email')}
+                  isError={!!form.formState.errors.email}
+                  errorMessage={form.formState.errors.email?.message ?? ''}
+                  clearError={() => form.clearErrors('email')}
                   onChange={field.onChange}
                />
             )}
@@ -184,17 +183,20 @@ const RegisterBusiness = (props: Props) => {
                'bg-blue-600 active:scale-95 hover:bg-blue-800 duration-75 ease-linear cursor-pointer'
             )}
          >
-            <span className="text-sm font-semibold text-white">
-               Create business account
-            </span>
-            {/* <Loader
+            {!isLoading ? (
+               <span className="text-sm font-semibold text-white">
+                  Create business account
+               </span>
+            ) : (
+               <Loader
                   style={{
                      width: '20px',
                      height: '20px',
                      color: 'white',
                      borderWidth: '2px'
                   }}
-               /> */}
+               />
+            )}
          </button>
       </form>
    )

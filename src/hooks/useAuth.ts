@@ -9,7 +9,7 @@ import {
 import { auth, facebookProvider, googleProvider } from '@/utils/firebase'
 
 import { createClient } from '@/utils/supabase/client'
-import { setUser } from '@/stores/auth/authSlice'
+import { setBusinessRegisterForm, setUser } from '@/stores/auth/authSlice'
 import { signInWithPopup } from 'firebase/auth'
 import { useAppDispatch } from './useRedux'
 import { useRouter } from 'next/navigation'
@@ -141,6 +141,33 @@ export const useAuth = () => {
       }
    }
 
+   const registerBusinessStep1 = async (
+      country: string,
+      email: string,
+      business_name: string,
+      password: string
+   ) => {
+      setIsLoading(true)
+      try {
+         const isExistedEmail = await findUserByEmail(email)
+         if (isExistedEmail) {
+            throw new Error('Email already exists')
+         }
+         dispatch(
+            setBusinessRegisterForm({
+               country,
+               email,
+               business_name,
+               password
+            })
+         )
+      } catch (error) {
+         console.error('Error registering user', error)
+      } finally {
+         setIsLoading(false)
+      }
+   }
+
    const findUserByEmail = async (email: string) => {
       try {
          const { data, error } = await supabase
@@ -191,6 +218,8 @@ export const useAuth = () => {
       signInWithGoogle,
       signInWithFacebook,
       loginWithCredentials,
-      registerPersonalWithCredentials
+      registerPersonalWithCredentials,
+      findUserByEmail,
+      registerBusinessStep1
    }
 }
