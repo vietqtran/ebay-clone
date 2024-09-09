@@ -1,5 +1,4 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-
 import {
    RegisterBusinessCredentials,
    RegisterPersonalCredentials,
@@ -9,15 +8,21 @@ import {
 interface AuthState {
    currentRegisterForm: 'personal' | 'business'
    user: Omit<User, 'hashed_password'> | null
+   unverifiedUser: Omit<User, 'hashed_password'> | null
    businessRegisterForm: Partial<
       RegisterBusinessCredentials & RegisterPersonalCredentials
    > | null
+   OTPCountDown: number
+   OTPEncrypted: string | null
 }
 
 const initialState: AuthState = {
    currentRegisterForm: 'personal',
    user: null,
-   businessRegisterForm: null
+   unverifiedUser: null,
+   businessRegisterForm: null,
+   OTPCountDown: 15,
+   OTPEncrypted: null
 }
 
 const authSlice = createSlice({
@@ -38,6 +43,12 @@ const authSlice = createSlice({
       ) {
          return { ...state, user: action.payload }
       },
+      setUnverifiedUser(
+         state,
+         action: PayloadAction<Omit<User, 'hashed_password'> | null>
+      ) {
+         return { ...state, unverifiedUser: action.payload }
+      },
       setBusinessRegisterForm(
          state,
          action: PayloadAction<Partial<
@@ -51,10 +62,22 @@ const authSlice = createSlice({
                ...action.payload
             }
          }
+      },
+      setOTPCountDown(state, action: PayloadAction<number>) {
+         return { ...state, OTPCountDown: action.payload }
+      },
+      setOTPEncrypted(state, action: PayloadAction<string | null>) {
+         return { ...state, OTPEncrypted: action.payload }
       }
    }
 })
 
-export const { setCurrentRegisterForm, setUser, setBusinessRegisterForm } =
-   authSlice.actions
+export const {
+   setCurrentRegisterForm,
+   setUser,
+   setUnverifiedUser,
+   setBusinessRegisterForm,
+   setOTPCountDown,
+   setOTPEncrypted
+} = authSlice.actions
 export { authSlice }

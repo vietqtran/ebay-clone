@@ -3,7 +3,7 @@ import Link from 'next/link'
 import React from 'react'
 
 type Props = {
-   page: 'signin' | 'register'
+   page: 'signin' | 'register' | 'verify'
 }
 
 const AuthHeader = ({ page }: Props) => {
