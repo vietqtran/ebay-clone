@@ -44,7 +44,13 @@ const authSlice = createSlice({
             RegisterBusinessCredentials & RegisterPersonalCredentials
          > | null>
       ) {
-         return { ...state, businessRegisterForm: action.payload }
+         return {
+            ...state,
+            businessRegisterForm: {
+               ...state.businessRegisterForm,
+               ...action.payload
+            }
+         }
       }
    }
 })

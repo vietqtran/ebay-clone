@@ -1,5 +1,6 @@
 import { ShippingCountry } from '@/types/country'
 import { createClient } from '@/utils/supabase/client'
+import { toast } from 'sonner'
 
 export const useCountry = () => {
    const supabase = createClient()
@@ -17,7 +18,10 @@ export const useCountry = () => {
    const getAllCountries = async () => {
       try {
          const { data, error } = await supabase.from('countries').select('*')
-         if (error) throw new Error(error.message)
+         if (error) {
+            toast.error(error.message)
+            throw new Error(error.message)
+         }
          return data as ShippingCountry[]
       } catch (error) {
          console.log(error)
@@ -32,7 +36,10 @@ export const useCountry = () => {
             .select('*')
             .eq('code', code)
             .single()
-         if (error) throw new Error(error.message)
+         if (error) {
+            toast.error(error.message)
+            throw new Error(error.message)
+         }
          return data as ShippingCountry
       } catch (error) {
          console.log(error)
