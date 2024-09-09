@@ -6,14 +6,21 @@ import {
    User
 } from '@/types/user'
 import { auth, facebookProvider, googleProvider } from '@/utils/firebase'
+import {
+   setBusinessRegisterForm,
+   setOTPEncrypted,
+   setUnverifiedUser,
+   setUser
+} from '@/stores/auth/authSlice'
 
+import CryptoJS from 'crypto-js'
 import { createClient } from '@/utils/supabase/client'
-import { setBusinessRegisterForm, setUser } from '@/stores/auth/authSlice'
+import { generateOTP } from '@/helpers'
 import { signInWithPopup } from 'firebase/auth'
+import { toast } from 'sonner'
 import { useAppDispatch } from './useRedux'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { toast } from 'sonner'
 
 export const useAuth = () => {
    const { push } = useRouter()
@@ -35,22 +42,26 @@ export const useAuth = () => {
             if (isExisted) {
                const userUpdated = await updateUser(user)
                if (userUpdated) {
-                  dispatch(setUser(userUpdated))
+                  if (!userUpdated.is_verified) {
+                     dispatch(setUnverifiedUser(userUpdated))
+                     await redirectToVerifyEmail()
+                  } else {
+                     dispatch(setUser(userUpdated))
+                     push('/')
+                  }
                }
             } else {
                const { data, error } = await supabase
                   .from('users')
-                  .insert({
-                     ...user
-                  })
+                  .insert(user)
                   .select('*')
                if (error) {
                   toast.error(error.message)
                   throw new Error(error.message)
                }
-               dispatch(setUser(data[0]))
+               dispatch(setUnverifiedUser(data[0]))
+               await redirectToVerifyEmail()
             }
-            push('/')
          }
       } catch (error) {
          console.error('Error signing in with Google', error)
@@ -71,22 +82,26 @@ export const useAuth = () => {
             if (isExisted) {
                const userUpdated = await updateUser(user)
                if (userUpdated) {
-                  dispatch(setUser(userUpdated))
+                  if (!userUpdated.is_verified) {
+                     dispatch(setUnverifiedUser(userUpdated))
+                     await redirectToVerifyEmail()
+                  } else {
+                     dispatch(setUser(userUpdated))
+                     push('/')
+                  }
                }
             } else {
                const { data, error } = await supabase
                   .from('users')
-                  .insert({
-                     ...user
-                  })
+                  .insert(user)
                   .select('*')
                if (error) {
                   toast.error(error.message)
                   throw new Error(error.message)
                }
-               dispatch(setUser(data[0]))
+               dispatch(setUnverifiedUser(data[0]))
+               await redirectToVerifyEmail()
             }
-            push('/')
          }
       } catch (error) {
          console.error('Error signing in with Facebook', error)
@@ -106,12 +121,16 @@ export const useAuth = () => {
             loginCredentials.password,
             user.hashed_password as string
          )
-         if (isPasswordMatch) {
-            dispatch(setUser(user))
-            push('/')
-         } else {
+         if (!isPasswordMatch) {
             toast.error('Please enter the correct password')
             throw new Error('Please enter the correct password')
+         }
+         if (!user.is_verified) {
+            dispatch(setUnverifiedUser(user))
+            await redirectToVerifyEmail()
+         } else {
+            dispatch(setUser(user))
+            push('/')
          }
       } catch (error) {
          console.error('Error signing in with email and password', error)
@@ -147,8 +166,8 @@ export const useAuth = () => {
             toast.error(error.message)
             throw new Error(error.message)
          }
-         dispatch(setUser(data[0]))
-         push('/')
+         dispatch(setUnverifiedUser(data[0]))
+         await redirectToVerifyEmail()
       } catch (error) {
          console.error('Error registering user', error)
       } finally {
@@ -170,18 +189,24 @@ export const useAuth = () => {
             throw new Error('Email already exists')
          }
          dispatch(
-            setBusinessRegisterForm({
-               country,
-               email,
-               business_name,
-               password
-            })
+            setBusinessRegisterForm({ country, email, business_name, password })
          )
       } catch (error) {
          console.error('Error registering user', error)
       } finally {
          setIsLoading(false)
       }
+   }
+
+   const redirectToVerifyEmail = async () => {
+      const OTP = generateOTP()
+      const encryptedOtp = CryptoJS.AES.encrypt(
+         OTP,
+         process.env.NEXT_PUBLIC_CRYPTOJS_SECRET_KEY!
+      ).toString()
+      console.log(OTP)
+      dispatch(setOTPEncrypted(encryptedOtp))
+      push('/verify')
    }
 
    const findUserByEmail = async (email: string) => {
@@ -204,9 +229,7 @@ export const useAuth = () => {
       try {
          const { data, error } = await supabase
             .from('users')
-            .update({
-               ...user
-            })
+            .update(user)
             .eq('email', user.email)
             .select('*')
          if (error) {
