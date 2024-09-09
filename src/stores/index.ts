@@ -22,7 +22,9 @@ const store = configureStore({
    reducer: {
       auth: persistedAuthReducer,
       country: persistedCountryReducer
-   }
+   },
+   middleware: getDefaultMiddleware =>
+      getDefaultMiddleware({ serializableCheck: false })
 })
 
 export type RootState = ReturnType<typeof store.getState>

@@ -6,6 +6,7 @@ import 'simplebar-react/dist/simplebar.min.css'
 import { Inter } from 'next/font/google'
 import type { Metadata } from 'next'
 import ReduxProvider from '@/components/providers/ReduxProvider'
+import { Toaster } from 'sonner'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -28,8 +29,16 @@ export default function RootLayout({
    return (
       <html lang="en">
          <body className={inter.className}>
-            <ReduxProvider>{children}</ReduxProvider>
-            <div id="portal"></div>
+            <ReduxProvider>
+               {children}
+               <div id="portal"></div>
+               <Toaster
+                  richColors
+                  position="bottom-right"
+                  expand={false}
+                  closeButton
+               />
+            </ReduxProvider>
          </body>
       </html>
    )
