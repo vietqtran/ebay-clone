@@ -3,16 +3,18 @@ import { Controller, useForm } from 'react-hook-form'
 import Checkbox from '@/components/common/Checkbox'
 import Input from '@/components/common/Input'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Select from '@/components/common/Select'
 import _ from 'lodash'
 import { twMerge } from 'tailwind-merge'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useAppDispatch } from '@/hooks/useRedux'
-import { setBusinessRegisterForm } from '@/stores/auth/authSlice'
 import { useAuth } from '@/hooks/useAuth'
 import Loader from '@/components/common/Loader'
+import { useCountry } from '@/hooks/useCountry'
+import { ShippingCountry } from '@/types/country'
+import { toast } from 'sonner'
+import { sendEmail } from '@/utils/mail/send-mail'
 
 type Props = {}
 
@@ -35,9 +37,19 @@ export const schema = z.object({
 type FormData = z.infer<typeof schema>
 
 const RegisterBusiness = (props: Props) => {
-   const dispatch = useAppDispatch()
    const { registerBusinessStep1, isLoading } = useAuth()
+   const { getAllCountries } = useCountry()
+   const [countries, setCountries] = React.useState<ShippingCountry[]>([])
    const [isAgreed, setIsAgreed] = React.useState(false)
+
+   useEffect(() => {
+      const fetchCountries = async () => {
+         const countries = await getAllCountries()
+         setCountries(countries)
+      }
+      fetchCountries()
+   }, [])
+
    const form = useForm<FormData>({
       resolver: zodResolver(schema),
       defaultValues: {
@@ -49,6 +61,10 @@ const RegisterBusiness = (props: Props) => {
    })
 
    const onSubmit = async (data: FormData) => {
+      if (!isAgreed) {
+         toast.error('Please select checkbox to continue')
+         return
+      }
       const { business_name, email, password, country } = data
       await registerBusinessStep1(country, email, business_name, password)
    }
@@ -123,33 +139,11 @@ const RegisterBusiness = (props: Props) => {
                <Select
                   placeholder="Where is your business registered?"
                   value={form.watch('country')}
-                  options={[
-                     {
-                        id: '1',
-                        value: '1',
-                        label: 'Country 1'
-                     },
-                     {
-                        id: '2',
-                        value: '2',
-                        label: 'Country 2'
-                     },
-                     {
-                        id: '3',
-                        value: '3',
-                        label: 'Country 3'
-                     },
-                     {
-                        id: '4',
-                        value: '4',
-                        label: 'Country 4'
-                     },
-                     {
-                        id: '5',
-                        value: '5',
-                        label: 'Country 5'
-                     }
-                  ]}
+                  options={countries.map((country: ShippingCountry) => ({
+                     label: country.name,
+                     value: country.code,
+                     id: country.code
+                  }))}
                   description={`If your business isn't registered, select your country of residence.`}
                   onChange={field.onChange}
                />

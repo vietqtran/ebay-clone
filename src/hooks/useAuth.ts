@@ -2,7 +2,6 @@ import * as bcrypt from 'bcryptjs'
 
 import {
    LoginCredentials,
-   RegisterBusinessCredentials,
    RegisterPersonalCredentials,
    User
 } from '@/types/user'
@@ -14,6 +13,7 @@ import { signInWithPopup } from 'firebase/auth'
 import { useAppDispatch } from './useRedux'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 export const useAuth = () => {
    const { push } = useRouter()
@@ -44,7 +44,10 @@ export const useAuth = () => {
                      ...user
                   })
                   .select('*')
-               if (error) throw new Error(error.message)
+               if (error) {
+                  toast.error(error.message)
+                  throw new Error(error.message)
+               }
                dispatch(setUser(data[0]))
             }
             push('/')
@@ -77,20 +80,27 @@ export const useAuth = () => {
                      ...user
                   })
                   .select('*')
-               if (error) throw new Error(error.message)
+               if (error) {
+                  toast.error(error.message)
+                  throw new Error(error.message)
+               }
                dispatch(setUser(data[0]))
             }
             push('/')
          }
       } catch (error) {
          console.error('Error signing in with Facebook', error)
+         toast.error('Error signing in with Facebook')
       }
    }
 
    const loginWithCredentials = async (loginCredentials: LoginCredentials) => {
       try {
          const { data, error } = await supabase.from('users').select('*')
-         if (error) throw new Error(error.message)
+         if (error) {
+            toast.error(error.message)
+            throw new Error(error.message)
+         }
          const user = data[0] as User
          const isPasswordMatch = await comparePassword(
             loginCredentials.password,
@@ -100,6 +110,7 @@ export const useAuth = () => {
             dispatch(setUser(user))
             push('/')
          } else {
+            toast.error('Please enter the correct password')
             throw new Error('Please enter the correct password')
          }
       } catch (error) {
@@ -116,6 +127,7 @@ export const useAuth = () => {
             registerPersonalCredentials.email
          )
          if (isExisted) {
+            toast.error('Email already exists')
             throw new Error('Email already exists')
          }
          const passwordHash = await hashPassword(
@@ -131,7 +143,10 @@ export const useAuth = () => {
                hashed_password: passwordHash
             })
             .select('*')
-         if (error) throw new Error(error.message)
+         if (error) {
+            toast.error(error.message)
+            throw new Error(error.message)
+         }
          dispatch(setUser(data[0]))
          push('/')
       } catch (error) {
@@ -151,6 +166,7 @@ export const useAuth = () => {
       try {
          const isExistedEmail = await findUserByEmail(email)
          if (isExistedEmail) {
+            toast.error('Email already exists')
             throw new Error('Email already exists')
          }
          dispatch(
@@ -174,7 +190,10 @@ export const useAuth = () => {
             .from('users')
             .select('*')
             .eq('email', email)
-         if (error) throw new Error(error.message)
+         if (error) {
+            toast.error(error.message)
+            throw new Error(error.message)
+         }
          return data[0] as User
       } catch (error) {
          console.error('Error finding user by email', error)
@@ -190,7 +209,10 @@ export const useAuth = () => {
             })
             .eq('email', user.email)
             .select('*')
-         if (error) throw new Error(error.message)
+         if (error) {
+            toast.error(error.message)
+            throw new Error(error.message)
+         }
          return data[0] as User
       } catch (error) {
          console.error('Error updating user', error)
@@ -201,6 +223,7 @@ export const useAuth = () => {
       try {
          return await bcrypt.hash(password, 10)
       } catch (error) {
+         toast.error('Error hashing password')
          console.error('Error hashing password', error)
       }
    }
@@ -209,6 +232,7 @@ export const useAuth = () => {
       try {
          return await bcrypt.compare(password, hash)
       } catch (error) {
+         toast.error('Error comparing password')
          console.error('Error comparing password', error)
       }
    }
