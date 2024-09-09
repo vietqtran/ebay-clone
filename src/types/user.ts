@@ -10,6 +10,7 @@ export type User = {
    avatar_url?: string
    created_at?: Date
    updated_at?: Date
+   is_verified?: boolean
 }
 
 export type LoginCredentials = {
