@@ -4,12 +4,11 @@ import { PersistConfig } from 'redux-persist/es/types'
 import { authSlice } from './auth/authSlice'
 import { configureStore } from '@reduxjs/toolkit'
 import { countrySlice } from './country/countrySlice'
-import sessionStorage from 'redux-persist/es/storage/session'
 import storage from 'redux-persist/lib/storage'
 
 const persistConfig: PersistConfig<any> = {
    key: 'root',
-   storage: sessionStorage
+   storage
 }
 
 const persistedAuthReducer = persistReducer(persistConfig, authSlice.reducer)
