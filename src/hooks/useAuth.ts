@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcryptjs'
+import argon2 from 'argon2'
 
 import {
    LoginCredentials,
@@ -21,6 +21,7 @@ import { toast } from 'sonner'
 import { useAppDispatch } from './useRedux'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { sendOtpEmail } from '@/utils/mail/send-mail'
 
 export const useAuth = () => {
    const { push } = useRouter()
@@ -44,7 +45,7 @@ export const useAuth = () => {
                if (userUpdated) {
                   if (!userUpdated.is_verified) {
                      dispatch(setUnverifiedUser(userUpdated))
-                     await redirectToVerifyEmail()
+                     await redirectToVerifyEmail(userUpdated.email)
                   } else {
                      dispatch(setUser(userUpdated))
                      push('/')
@@ -59,8 +60,9 @@ export const useAuth = () => {
                   toast.error(error.message)
                   throw new Error(error.message)
                }
-               dispatch(setUnverifiedUser(data[0]))
-               await redirectToVerifyEmail()
+               const createdUser = data[0] as User
+               dispatch(setUnverifiedUser(createdUser))
+               await redirectToVerifyEmail(createdUser.email)
             }
          }
       } catch (error) {
@@ -78,13 +80,13 @@ export const useAuth = () => {
                name: response.user.displayName ?? '',
                provider: 'facebook'
             }
-            const isExisted = await findUserByEmail(user.email)
-            if (isExisted) {
+            const existingUser = await findExistingUser(user.email)
+            if (existingUser) {
                const userUpdated = await updateUser(user)
                if (userUpdated) {
                   if (!userUpdated.is_verified) {
                      dispatch(setUnverifiedUser(userUpdated))
-                     await redirectToVerifyEmail()
+                     await redirectToVerifyEmail(userUpdated.email)
                   } else {
                      dispatch(setUser(userUpdated))
                      push('/')
@@ -99,8 +101,9 @@ export const useAuth = () => {
                   toast.error(error.message)
                   throw new Error(error.message)
                }
-               dispatch(setUnverifiedUser(data[0]))
-               await redirectToVerifyEmail()
+               const createdUser = data[0] as User
+               dispatch(setUnverifiedUser(createdUser))
+               await redirectToVerifyEmail(createdUser.email)
             }
          }
       } catch (error) {
@@ -110,30 +113,37 @@ export const useAuth = () => {
    }
 
    const loginWithCredentials = async (loginCredentials: LoginCredentials) => {
+      setIsLoading(true)
       try {
-         const { data, error } = await supabase.from('users').select('*')
-         if (error) {
-            toast.error(error.message)
-            throw new Error(error.message)
-         }
-         const user = data[0] as User
-         const isPasswordMatch = await comparePassword(
-            loginCredentials.password,
-            user.hashed_password as string
-         )
-         if (!isPasswordMatch) {
+         const user = await findUserByEmail(loginCredentials.email)
+
+         const isPasswordMatch = await fetch('/api/auth/verify-password', {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+               hashed_password: user?.hashed_password,
+               password: loginCredentials.password
+            })
+         })
+         const compareResult = await isPasswordMatch.json()
+         if (!compareResult.isMatch) {
             toast.error('Please enter the correct password')
             throw new Error('Please enter the correct password')
          }
-         if (!user.is_verified) {
-            dispatch(setUnverifiedUser(user))
-            await redirectToVerifyEmail()
+
+         if (!user?.is_verified) {
+            dispatch(setUnverifiedUser(user!))
+            await redirectToVerifyEmail(user?.email!)
          } else {
             dispatch(setUser(user))
             push('/')
          }
       } catch (error) {
          console.error('Error signing in with email and password', error)
+      } finally {
+         setIsLoading(false)
       }
    }
 
@@ -149,9 +159,18 @@ export const useAuth = () => {
             toast.error('Email already exists')
             throw new Error('Email already exists')
          }
-         const passwordHash = await hashPassword(
-            registerPersonalCredentials.password
-         )
+
+         const passwordHash = await fetch('/api/auth/hash-password', {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+               password: registerPersonalCredentials.password
+            })
+         })
+         const passwordHashRes = await passwordHash.json()
+
          const { data, error } = await supabase
             .from('users')
             .insert({
@@ -159,15 +178,16 @@ export const useAuth = () => {
                last_name: registerPersonalCredentials.last_name,
                email: registerPersonalCredentials.email,
                provider: registerPersonalCredentials.provider,
-               hashed_password: passwordHash
+               hashed_password: passwordHashRes.hash
             })
             .select('*')
          if (error) {
             toast.error(error.message)
             throw new Error(error.message)
          }
-         dispatch(setUnverifiedUser(data[0]))
-         await redirectToVerifyEmail()
+         const createdUser = data[0] as User
+         dispatch(setUnverifiedUser(createdUser))
+         await redirectToVerifyEmail(createdUser.email)
       } catch (error) {
          console.error('Error registering user', error)
       } finally {
@@ -198,8 +218,9 @@ export const useAuth = () => {
       }
    }
 
-   const redirectToVerifyEmail = async () => {
+   const redirectToVerifyEmail = async (email: string) => {
       const OTP = generateOTP()
+      await sendOtpEmail(email, OTP)
       const encryptedOtp = CryptoJS.AES.encrypt(
          OTP,
          process.env.NEXT_PUBLIC_CRYPTOJS_SECRET_KEY!
@@ -225,6 +246,11 @@ export const useAuth = () => {
       }
    }
 
+   const findExistingUser = async (email: string) => {
+      const isExisted = await findUserByEmail(email)
+      return isExisted
+   }
+
    const updateUser = async (user: User) => {
       try {
          const { data, error } = await supabase
@@ -242,21 +268,20 @@ export const useAuth = () => {
       }
    }
 
-   const hashPassword = async (password: string) => {
+   const verifyUser = async (email: string) => {
       try {
-         return await bcrypt.hash(password, 10)
+         const { data, error } = await supabase
+            .from('users')
+            .update({ is_verified: true })
+            .eq('email', email)
+            .select('*')
+         if (error) {
+            toast.error(error.message)
+            throw new Error(error.message)
+         }
+         return data[0] as User
       } catch (error) {
-         toast.error('Error hashing password')
-         console.error('Error hashing password', error)
-      }
-   }
-
-   const comparePassword = async (password: string, hash: string) => {
-      try {
-         return await bcrypt.compare(password, hash)
-      } catch (error) {
-         toast.error('Error comparing password')
-         console.error('Error comparing password', error)
+         console.error('Error verifying user', error)
       }
    }
 
@@ -267,6 +292,8 @@ export const useAuth = () => {
       loginWithCredentials,
       registerPersonalWithCredentials,
       findUserByEmail,
-      registerBusinessStep1
+      registerBusinessStep1,
+      verifyUser,
+      redirectToVerifyEmail
    }
 }

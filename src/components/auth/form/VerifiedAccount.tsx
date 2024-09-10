@@ -11,17 +11,17 @@ import CryptoJS from 'crypto-js'
 import OtpInput from 'react-otp-input'
 import { toast } from 'sonner'
 import { twMerge } from 'tailwind-merge'
-import { useAuth } from '@/hooks/useAuth'
-import { useDispatch } from 'react-redux'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@/hooks/useAuth'
 
 type Props = {}
 
-const COUNTDOWN_DURATION = 5
+const COUNTDOWN_DURATION = 15
 
 const VerifiedAccount = (props: Props) => {
    const { push, replace } = useRouter()
    const dispatch = useAppDispatch()
+   const { verifyUser, redirectToVerifyEmail } = useAuth()
    const { unverifiedUser } = useAppSelector(state => state.auth)
    const { OTPCountDown, OTPEncrypted } = useAppSelector(state => state.auth)
    const [otp, setOtp] = React.useState('')
@@ -42,19 +42,21 @@ const VerifiedAccount = (props: Props) => {
       return () => clearInterval(countdown)
    }, [OTPCountDown, dispatch])
 
-   const handleResendOtp = () => {
+   const handleResendOtp = async () => {
       if (OTPCountDown > 0) return
       dispatch(setOTPCountDown(COUNTDOWN_DURATION))
+      await redirectToVerifyEmail(unverifiedUser?.email!)
    }
 
-   const handleVerifyOtp = () => {
+   const handleVerifyOtp = async () => {
       const bytes = CryptoJS.AES.decrypt(
          OTPEncrypted!,
          process.env.NEXT_PUBLIC_CRYPTOJS_SECRET_KEY!
       )
       const decryptedOtp = bytes.toString(CryptoJS.enc.Utf8)
       if (otp === decryptedOtp) {
-         dispatch(setUser(unverifiedUser!))
+         await verifyUser(unverifiedUser?.email!)
+         dispatch(setUser(unverifiedUser))
          dispatch(setUnverifiedUser(null))
          push('/')
          setTimeout(() => {
@@ -79,7 +81,7 @@ const VerifiedAccount = (props: Props) => {
          <div className="flex w-full flex-col items-center">
             <span className="text-sm">We emailed a security code to</span>
             <span className="text-sm font-semibold">
-               tranquocvifdget1303@gmail.com
+               {unverifiedUser?.email}
             </span>
             <span className="text-sm">
                If you can&apos;t find it, check your spam folder.{' '}

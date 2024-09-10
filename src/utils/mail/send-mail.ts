@@ -2,7 +2,7 @@
 
 import nodemailer from 'nodemailer'
 import { render } from '@react-email/render'
-import ConfirmTemplate from '@/components/email/ConfirmTemplate'
+import SenOTPTemplate from '@/components/email/SendOTPTemplate'
 
 const transporter = nodemailer.createTransport({
    service: 'Gmail',
@@ -13,8 +13,10 @@ const transporter = nodemailer.createTransport({
    }
 })
 
-export async function sendEmail(to: string[]): Promise<void> {
-   const emailHtml = await render(ConfirmTemplate({}) as React.ReactElement)
+export const sendOtpEmail = async (to: string, otp: string) => {
+   const emailHtml = await render(
+      SenOTPTemplate({ code: otp }) as React.ReactElement
+   )
 
    const options = {
       from: `eBay Siêu cấp VIP Pro <${process.env.NEXT_PUBLIC_EMAIL}>`,
@@ -22,6 +24,5 @@ export async function sendEmail(to: string[]): Promise<void> {
       subject: 'hê lô uất !!!',
       html: emailHtml
    }
-
    await transporter.sendMail(options)
 }
