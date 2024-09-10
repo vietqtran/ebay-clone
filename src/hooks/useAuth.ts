@@ -116,18 +116,11 @@ export const useAuth = () => {
       try {
          const user = await findUserByEmail(loginCredentials.email)
 
-         const isPasswordMatch = await fetch('/api/auth/verify-password', {
-            method: 'POST',
-            headers: {
-               'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-               hashed_password: user?.hashed_password,
-               password: loginCredentials.password
-            })
-         })
-         const compareResult = await isPasswordMatch.json()
-         if (!compareResult.isMatch) {
+         const isPasswordMatch = comparePassword(
+            loginCredentials.password,
+            user?.hashed_password as string
+         )
+         if (!isPasswordMatch) {
             toast.error('Please enter the correct password')
             throw new Error('Please enter the correct password')
          }
@@ -158,18 +151,9 @@ export const useAuth = () => {
             toast.error('Email already exists')
             throw new Error('Email already exists')
          }
-
-         const passwordHash = await fetch('/api/auth/hash-password', {
-            method: 'POST',
-            headers: {
-               'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-               password: registerPersonalCredentials.password
-            })
-         })
-         const passwordHashRes = await passwordHash.json()
-
+         const passwordHashed = hashPassword(
+            registerPersonalCredentials.password
+         )
          const { data, error } = await supabase
             .from('users')
             .insert({
@@ -177,7 +161,7 @@ export const useAuth = () => {
                last_name: registerPersonalCredentials.last_name,
                email: registerPersonalCredentials.email,
                provider: registerPersonalCredentials.provider,
-               hashed_password: passwordHashRes.hash
+               hashed_password: passwordHashed
             })
             .select('*')
          if (error) {
@@ -288,6 +272,30 @@ export const useAuth = () => {
          return data[0] as User
       } catch (error) {
          console.error('Error verifying user', error)
+      }
+   }
+
+   const hashPassword = (password: string) => {
+      try {
+         const encryptedPassword = CryptoJS.AES.encrypt(
+            password,
+            process.env.NEXT_PUBLIC_CRYPTOJS_SECRET_KEY!
+         )
+         return encryptedPassword.toString()
+      } catch (error) {
+         console.error('Error hashing password', error)
+      }
+   }
+
+   const comparePassword = (password: string, hashedPassword: string) => {
+      try {
+         const decryptedPassword = CryptoJS.AES.decrypt(
+            hashedPassword,
+            process.env.NEXT_PUBLIC_CRYPTOJS_SECRET_KEY!
+         ).toString(CryptoJS.enc.Utf8)
+         return decryptedPassword === password
+      } catch (error) {
+         console.error('Error comparing password', error)
       }
    }
 
