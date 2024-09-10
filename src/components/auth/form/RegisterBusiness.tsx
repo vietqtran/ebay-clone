@@ -14,7 +14,6 @@ import Loader from '@/components/common/Loader'
 import { useCountry } from '@/hooks/useCountry'
 import { ShippingCountry } from '@/types/country'
 import { toast } from 'sonner'
-import { sendEmail } from '@/utils/mail/send-mail'
 
 type Props = {}
 
