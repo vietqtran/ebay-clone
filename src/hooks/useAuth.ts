@@ -1,5 +1,3 @@
-import argon2 from 'argon2'
-
 import {
    LoginCredentials,
    RegisterPersonalCredentials,
@@ -22,6 +20,7 @@ import { useAppDispatch } from './useRedux'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { sendOtpEmail } from '@/utils/mail/send-mail'
+import { setLoadingFullScreen } from '@/stores/common/commonSlice'
 
 export const useAuth = () => {
    const { push } = useRouter()
@@ -219,15 +218,22 @@ export const useAuth = () => {
    }
 
    const redirectToVerifyEmail = async (email: string) => {
-      const OTP = generateOTP()
-      await sendOtpEmail(email, OTP)
-      const encryptedOtp = CryptoJS.AES.encrypt(
-         OTP,
-         process.env.NEXT_PUBLIC_CRYPTOJS_SECRET_KEY!
-      ).toString()
-      console.log(OTP)
-      dispatch(setOTPEncrypted(encryptedOtp))
-      push('/verify')
+      dispatch(setLoadingFullScreen(true))
+      try {
+         const OTP = generateOTP()
+         await sendOtpEmail(email, OTP)
+         const encryptedOtp = CryptoJS.AES.encrypt(
+            OTP,
+            process.env.NEXT_PUBLIC_CRYPTOJS_SECRET_KEY!
+         ).toString()
+         console.log(OTP)
+         dispatch(setOTPEncrypted(encryptedOtp))
+         push('/verify')
+      } catch (error) {
+         console.error('Error redirecting to verify email', error)
+      } finally {
+         dispatch(setLoadingFullScreen(false))
+      }
    }
 
    const findUserByEmail = async (email: string) => {

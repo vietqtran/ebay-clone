@@ -17,11 +17,10 @@ export const sendOtpEmail = async (to: string, otp: string) => {
    const emailHtml = await render(
       SenOTPTemplate({ code: otp }) as React.ReactElement
    )
-
    const options = {
       from: `eBay Siêu cấp VIP Pro <${process.env.NEXT_PUBLIC_EMAIL}>`,
       to,
-      subject: 'hê lô uất !!!',
+      subject: 'eBay - Email verification',
       html: emailHtml
    }
    await transporter.sendMail(options)
