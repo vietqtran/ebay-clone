@@ -1,4 +1,3 @@
-// components/email/ConfirmTemplate.tsx
 import React from 'react'
 
 const ConfirmTemplate: React.FC = () => {
