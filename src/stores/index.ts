@@ -5,6 +5,7 @@ import { authSlice } from './auth/authSlice'
 import { configureStore } from '@reduxjs/toolkit'
 import { countrySlice } from './country/countrySlice'
 import storage from 'redux-persist/lib/storage'
+import { commonSlice } from './common/commonSlice'
 
 const persistConfig: PersistConfig<any> = {
    key: 'root',
@@ -20,7 +21,8 @@ const persistedCountryReducer = persistReducer(
 const store = configureStore({
    reducer: {
       auth: persistedAuthReducer,
-      country: persistedCountryReducer
+      country: persistedCountryReducer,
+      common: commonSlice.reducer
    },
    middleware: getDefaultMiddleware =>
       getDefaultMiddleware({ serializableCheck: false })
