@@ -7,6 +7,7 @@ import { Inter } from 'next/font/google'
 import type { Metadata } from 'next'
 import ReduxProvider from '@/components/providers/ReduxProvider'
 import { Toaster } from 'sonner'
+import FullPageLoader from '@/components/common/Loader/FullPageLoader'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -38,6 +39,7 @@ export default function RootLayout({
                   expand={false}
                   closeButton
                />
+               <FullPageLoader />
             </ReduxProvider>
          </body>
       </html>

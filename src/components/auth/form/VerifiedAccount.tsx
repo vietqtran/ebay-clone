@@ -13,6 +13,7 @@ import { toast } from 'sonner'
 import { twMerge } from 'tailwind-merge'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/hooks/useAuth'
+import { setLoadingFullScreen } from '@/stores/common/commonSlice'
 
 type Props = {}
 
@@ -49,21 +50,28 @@ const VerifiedAccount = (props: Props) => {
    }
 
    const handleVerifyOtp = async () => {
-      const bytes = CryptoJS.AES.decrypt(
-         OTPEncrypted!,
-         process.env.NEXT_PUBLIC_CRYPTOJS_SECRET_KEY!
-      )
-      const decryptedOtp = bytes.toString(CryptoJS.enc.Utf8)
-      if (otp === decryptedOtp) {
-         await verifyUser(unverifiedUser?.email!)
-         dispatch(setUser(unverifiedUser))
-         dispatch(setUnverifiedUser(null))
-         push('/')
-         setTimeout(() => {
-            dispatch(setOTPEncrypted(null))
-         }, 300)
-      } else {
-         toast.error('Please enter the correct OTP')
+      dispatch(setLoadingFullScreen(true))
+      try {
+         const bytes = CryptoJS.AES.decrypt(
+            OTPEncrypted!,
+            process.env.NEXT_PUBLIC_CRYPTOJS_SECRET_KEY!
+         )
+         const decryptedOtp = bytes.toString(CryptoJS.enc.Utf8)
+         if (otp === decryptedOtp) {
+            await verifyUser(unverifiedUser?.email!)
+            dispatch(setUser(unverifiedUser))
+            dispatch(setUnverifiedUser(null))
+            push('/')
+            setTimeout(() => {
+               dispatch(setOTPEncrypted(null))
+            }, 300)
+         } else {
+            toast.error('Please enter the correct OTP')
+         }
+      } catch (error) {
+         console.error('Error verifying user', error)
+      } finally {
+         dispatch(setLoadingFullScreen(false))
       }
    }
 
