@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 
 import AuthFooter from './Footer/AuthFooter'
@@ -20,10 +20,15 @@ const AuthLayout = ({ children }: Props) => {
    const isSignIn = useMemo(() => pathName.includes('signin'), [pathName])
    const isVerified = useMemo(() => pathName.includes('verify'), [pathName])
 
-   if (user) {
-      push('/')
-      return null
-   }
+   useEffect(() => {
+      const checkAuth = () => {
+         if (user) {
+            push('/')
+            return null
+         }
+      }
+      checkAuth()
+   }, [user])
 
    return (
       <main className="flex size-full min-h-screen flex-col">
