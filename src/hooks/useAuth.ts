@@ -258,6 +258,28 @@ export const useAuth = () => {
       }
    }
 
+   const changeRegisteredEmail = async (oldEmail: string, email: string) => {
+      try {
+         const existedUser = await findExistingUser(email)
+         if (existedUser) {
+            toast.error('Email already exists')
+            throw new Error('Email already exists')
+         }
+         const { data, error } = await supabase
+            .from('users')
+            .update({ email: email })
+            .eq('email', oldEmail)
+            .select('*')
+         if (error) {
+            toast.error(error.message)
+            throw new Error(error.message)
+         }
+         return data[0] as User
+      } catch (error) {
+         throw new Error()
+      }
+   }
+
    const verifyUser = async (email: string) => {
       try {
          const { data, error } = await supabase
@@ -308,6 +330,7 @@ export const useAuth = () => {
       findUserByEmail,
       registerBusinessStep1,
       verifyUser,
-      redirectToVerifyEmail
+      redirectToVerifyEmail,
+      changeRegisteredEmail
    }
 }
