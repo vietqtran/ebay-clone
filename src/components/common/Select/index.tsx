@@ -15,6 +15,7 @@ type InputProps = {
    value?: string
    description?: string
    options?: { id: string; value: string; label: string }[]
+   disabled?: boolean
 }
 
 const Input = React.forwardRef<HTMLSelectElement, InputProps>(
@@ -31,7 +32,8 @@ const Input = React.forwardRef<HTMLSelectElement, InputProps>(
          clearError,
          value = '',
          description = '',
-         options = []
+         options = [],
+         disabled = false
       },
       ref
    ) => {
@@ -61,13 +63,17 @@ const Input = React.forwardRef<HTMLSelectElement, InputProps>(
                <select
                   ref={selectRef}
                   onChange={handleChange}
+                  disabled={disabled}
+                  value={value}
                   className={twMerge(
-                     'size-full text-sm cursor-pointer text-sm z-0 bg-transparent px-3 pt-[18px] pb-1 focus:outline-none mr-3'
+                     'size-full text-sm cursor-pointer disabled:cursor-not-allowed z-0 bg-transparent px-3 pt-[18px] pb-1 focus:outline-none mr-3'
                   )}
                >
-                  <option value=""></option>
+                  <option value="" selected={!value}></option>
                   {options.map(option => (
                      <option
+                        selected={value === option.value}
+                        disabled={disabled}
                         className="text-sm"
                         key={option.id}
                         value={option.value}

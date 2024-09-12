@@ -64,7 +64,7 @@ const AuthLayout = ({ children }: Props) => {
                      isSignIn && 'order-1'
                   )}
                >
-                  <div className="w-full max-w-[410px]">{children}</div>
+                  <div className="w-full max-w-[458px]">{children}</div>
                </div>
             </div>
          </div>

@@ -191,9 +191,16 @@ export const useAuth = () => {
             toast.error('Email already exists')
             throw new Error('Email already exists')
          }
+         const hashedPassword = hashPassword(password)
          dispatch(
-            setBusinessRegisterForm({ country, email, business_name, password })
+            setBusinessRegisterForm({
+               country,
+               email,
+               business_name,
+               password: hashedPassword
+            })
          )
+         push('/register/business')
       } catch (error) {
          console.error('Error registering user', error)
       } finally {
