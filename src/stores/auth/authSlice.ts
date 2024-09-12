@@ -8,7 +8,7 @@ import {
 interface AuthState {
    currentRegisterForm: 'personal' | 'business'
    user: Omit<User, 'hashed_password'> | null
-   unverifiedUser: Omit<User, 'hashed_password'> | null
+   unverifiedUser: Partial<Omit<User, 'hashed_password'>> | null
    businessRegisterForm: Partial<
       RegisterBusinessCredentials & RegisterPersonalCredentials
    > | null
@@ -68,6 +68,15 @@ const authSlice = createSlice({
       },
       setOTPEncrypted(state, action: PayloadAction<string | null>) {
          return { ...state, OTPEncrypted: action.payload }
+      },
+      changeUnverifiedEmail(state, action: PayloadAction<string>) {
+         return {
+            ...state,
+            unverifiedUser: {
+               ...state.unverifiedUser,
+               email: action.payload
+            }
+         }
       }
    }
 })
@@ -78,6 +87,7 @@ export const {
    setUnverifiedUser,
    setBusinessRegisterForm,
    setOTPCountDown,
-   setOTPEncrypted
+   setOTPEncrypted,
+   changeUnverifiedEmail
 } = authSlice.actions
 export { authSlice }
