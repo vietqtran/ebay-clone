@@ -1,13 +1,15 @@
 'use client'
 
-import Checkbox from '@/components/common/Checkbox'
 import Input from '@/components/common/Input'
 import Loader from '@/components/common/Loader'
 import Select from '@/components/common/Select'
+import { useAuth } from '@/hooks/useAuth'
 import { useCountry } from '@/hooks/useCountry'
 import { useAppDispatch, useAppSelector } from '@/hooks/useRedux'
-import { setBusinessRegisterForm } from '@/stores/auth/authSlice'
+import { Address } from '@/types/address'
 import { ShippingCountry } from '@/types/country'
+import { User } from '@/types/user'
+import { Vendor } from '@/types/vendor'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
@@ -47,7 +49,7 @@ export const schema = z.object({
       .string()
       .min(1, 'Please enter a valid last name.')
       .max(50, 'Last name is too long.'),
-   phone_numer: z
+   phone_number: z
       .string()
       .min(4, 'Please enter a valid phone number.')
       .max(15, 'Please enter a valid phone number.')
@@ -60,7 +62,8 @@ const BusinessInformation = (props: Props) => {
    const { push } = useRouter()
    const dispatch = useAppDispatch()
    const { businessRegisterForm } = useAppSelector(state => state.auth)
-   const { getAllCountries } = useCountry()
+   const { getAllCountries, getCountryByCode } = useCountry()
+   const {registerBusinessStep2} = useAuth()
 
    const [isLoading, setIsLoading] = React.useState(false)
    const [countries, setCountries] = React.useState<ShippingCountry[]>([])
@@ -71,10 +74,6 @@ const BusinessInformation = (props: Props) => {
          setCountries(countries)
       }
       fetchCountries()
-
-      return () => {
-         dispatch(setBusinessRegisterForm(null))
-      }
    }, [])
 
    useEffect(() => {
@@ -94,11 +93,39 @@ const BusinessInformation = (props: Props) => {
          postal_code: '',
          first_name: '',
          last_name: '',
-         phone_numer: ''
+         phone_number: ''
       }
    })
 
-   const onSubmit = async (data: FormData) => {}
+   const onSubmit = async (data: FormData) => {
+      setIsLoading(true)
+      try {
+         const country = await getCountryByCode(data.country)
+      const address: Address = {
+         country_id: country?.id!,
+         street_address: data.street_address,
+         street_address_2: data.street_address_2 ?? '',
+         city: data.city,
+         state: data.state,
+         postal_code: data.postal_code
+      }
+      const user: User = {
+         first_name: data.first_name,
+         last_name: data.last_name,
+         email: businessRegisterForm?.email!,
+         provider: 'email',
+         hashed_password: businessRegisterForm?.password!,
+         is_verified: true,
+      }
+      const vendor: Vendor = {
+         business_name: businessRegisterForm?.business_name!,
+      }
+      await registerBusinessStep2(user, address, vendor)
+      } catch (error) {
+      } finally {
+         setIsLoading(false)
+      }
+   }
 
    return (
       <form
@@ -181,7 +208,7 @@ const BusinessInformation = (props: Props) => {
                />
             )}
          />
-         <div className="w-full grid gap-5 grid-cols-2">
+         <div className="grid w-full grid-cols-2 gap-5">
             <Controller
                name="state"
                control={form.control}
@@ -216,13 +243,13 @@ const BusinessInformation = (props: Props) => {
             />
          </div>
          <div className="text-sm">
-            <p className="font-bold my-3">Tell us how to contact you</p>
+            <p className="my-3 font-bold">Tell us how to contact you</p>
             <p>
-               We'll use this info to notify you about account activity, or
-               anything else that requires your attention.
+               {`We'll use this info to notify you about account activity, or
+               anything else that requires your attention.`}
             </p>
          </div>
-         <div className="w-full grid gap-5 grid-cols-2">
+         <div className="grid w-full grid-cols-2 gap-5">
             <Controller
                name="first_name"
                control={form.control}
@@ -259,19 +286,19 @@ const BusinessInformation = (props: Props) => {
             />
          </div>
          <Controller
-            name="phone_numer"
+            name="phone_number"
             control={form.control}
             render={({ field }) => (
                <Input
-                  {...form.register('phone_numer')}
+                  {...form.register('phone_number')}
                   isAllNumber
                   placeholder="Phone number"
-                  value={form.watch('phone_numer')}
-                  isError={!!form.formState.errors.phone_numer}
+                  value={form.watch('phone_number')}
+                  isError={!!form.formState.errors.phone_number}
                   errorMessage={
-                     form.formState.errors.phone_numer?.message ?? ''
+                     form.formState.errors.phone_number?.message ?? ''
                   }
-                  clearError={() => form.clearErrors('phone_numer')}
+                  clearError={() => form.clearErrors('phone_number')}
                   onChange={field.onChange}
                />
             )}

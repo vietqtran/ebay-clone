@@ -21,9 +21,13 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { sendOtpEmail } from '@/utils/mail/send-mail'
 import { setLoadingFullScreen } from '@/stores/common/commonSlice'
+import { Address } from '@/types/address'
+import { Vendor } from '@/types/vendor'
+import { useAddress } from './useAddress'
 
 export const useAuth = () => {
    const { push } = useRouter()
+   const {createAddress} = useAddress()
    const dispatch = useAppDispatch()
    const supabase = createClient()
    const [isLoading, setIsLoading] = useState(false)
@@ -208,6 +212,10 @@ export const useAuth = () => {
       }
    }
 
+   const registerBusinessStep2 = async (user: User, address: Address, vendor: Vendor) => {
+      
+   }
+
    const redirectToVerifyEmail = async (email: string) => {
       dispatch(setLoadingFullScreen(true))
       try {
@@ -336,6 +344,7 @@ export const useAuth = () => {
       registerPersonalWithCredentials,
       findUserByEmail,
       registerBusinessStep1,
+      registerBusinessStep2,
       verifyUser,
       redirectToVerifyEmail,
       changeRegisteredEmail
