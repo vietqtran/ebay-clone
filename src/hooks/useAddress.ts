@@ -6,11 +6,14 @@ export const useAddress = () => {
    const supabase = createClient()
    const createAddress = async (address: Address) => {
       try {
-         const { data, error } = await supabase.from('addresses').insert(address)
+         const { data, error } = await supabase
+            .from('addresses')
+            .insert(address)
+            .select('*')
          if (error) {
             throw new Error(error.message)
          }
-         return data
+         return data[0] as Address
       } catch (error) {
          toast.error('Create address failed.')
          console.log(error)
