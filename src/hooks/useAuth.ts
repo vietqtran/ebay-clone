@@ -21,9 +21,13 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { sendOtpEmail } from '@/utils/mail/send-mail'
 import { setLoadingFullScreen } from '@/stores/common/commonSlice'
+import { Address } from '@/types/address'
+import { Vendor } from '@/types/vendor'
+import { useAddress } from './useAddress'
 
 export const useAuth = () => {
    const { push } = useRouter()
+   const {createAddress} = useAddress()
    const dispatch = useAppDispatch()
    const supabase = createClient()
    const [isLoading, setIsLoading] = useState(false)
@@ -191,14 +195,25 @@ export const useAuth = () => {
             toast.error('Email already exists')
             throw new Error('Email already exists')
          }
+         const hashedPassword = hashPassword(password)
          dispatch(
-            setBusinessRegisterForm({ country, email, business_name, password })
+            setBusinessRegisterForm({
+               country,
+               email,
+               business_name,
+               password: hashedPassword
+            })
          )
+         push('/register/business')
       } catch (error) {
          console.error('Error registering user', error)
       } finally {
          setIsLoading(false)
       }
+   }
+
+   const registerBusinessStep2 = async (user: User, address: Address, vendor: Vendor) => {
+      
    }
 
    const redirectToVerifyEmail = async (email: string) => {
@@ -329,6 +344,7 @@ export const useAuth = () => {
       registerPersonalWithCredentials,
       findUserByEmail,
       registerBusinessStep1,
+      registerBusinessStep2,
       verifyUser,
       redirectToVerifyEmail,
       changeRegisteredEmail
