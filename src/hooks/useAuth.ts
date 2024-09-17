@@ -1,14 +1,16 @@
 import {
    LoginCredentials,
    RegisterPersonalCredentials,
-   User
+   User,
+   UserRole
 } from '@/types/user'
 import { auth, facebookProvider, googleProvider } from '@/utils/firebase'
 import {
    setBusinessRegisterForm,
    setOTPEncrypted,
    setUnverifiedUser,
-   setUser
+   setUser,
+   setVendor
 } from '@/stores/auth/authSlice'
 
 import CryptoJS from 'crypto-js'
@@ -27,7 +29,7 @@ import { useAddress } from './useAddress'
 
 export const useAuth = () => {
    const { push } = useRouter()
-   const {createAddress} = useAddress()
+   const { createAddress } = useAddress()
    const dispatch = useAppDispatch()
    const supabase = createClient()
    const [isLoading, setIsLoading] = useState(false)
@@ -212,8 +214,59 @@ export const useAuth = () => {
       }
    }
 
-   const registerBusinessStep2 = async (user: User, address: Address, vendor: Vendor) => {
-      
+   const registerBusinessStep2 = async (
+      user: User,
+      address: Address,
+      vendor: Vendor
+   ) => {
+      try {
+         const isExistedEmail = await findUserByEmail(user.email)
+         if (isExistedEmail) {
+            toast.error('Email already exists')
+            throw new Error('Email already exists')
+         }
+         const { data: userCreated, error: userError } = await supabase
+            .from('users')
+            .insert({
+               ...user,
+               role: UserRole.VENDOR
+            })
+            .select('*')
+         if (userError) {
+            toast.error(userError.message)
+            throw new Error(userError.message)
+         }
+         const createdUser = userCreated[0] as Omit<User, 'hashed_password'>
+
+         const addressCreated = await createAddress({
+            ...address,
+            user_id: createdUser.id
+         })
+
+         const { data: vendorCreated, error: vendorError } = await supabase
+            .from('vendors')
+            .insert({
+               ...vendor,
+               user_id: createdUser.id,
+               address_id: addressCreated?.id
+            })
+            .select('*')
+         if (vendorError) {
+            await supabase
+               .from('addresses')
+               .delete()
+               .eq('id', addressCreated?.id)
+            await supabase.from('users').delete().eq('id', createdUser.id)
+            toast.error(vendorError.message)
+            throw new Error(vendorError.message)
+         }
+         const createdVendor = vendorCreated[0] as Vendor
+         dispatch(setVendor(createdVendor))
+         dispatch(setUser(createdUser))
+         push('/vendor')
+      } catch (error) {
+         console.error('Error registering user', error)
+      }
    }
 
    const redirectToVerifyEmail = async (email: string) => {

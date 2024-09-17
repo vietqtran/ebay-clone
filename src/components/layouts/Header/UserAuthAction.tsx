@@ -5,7 +5,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/useRedux'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
-import { setUser } from '@/stores/auth/authSlice'
+import { setUser, setVendor } from '@/stores/auth/authSlice'
 
 type Props = {}
 
@@ -40,7 +40,10 @@ const UserAuthAction = (props: Props) => {
                </div>
                <div className="px-2">
                   <button
-                     onClick={() => dispatch(setUser(null))}
+                     onClick={() => {
+                        dispatch(setUser(null))
+                        dispatch(setVendor(null))
+                     }}
                      className="w-full cursor-pointer rounded-md p-2 text-left text-sm hover:bg-gray-100"
                   >
                      Sign Out

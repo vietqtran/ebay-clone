@@ -53,7 +53,6 @@ export const schema = z.object({
       .string()
       .min(4, 'Please enter a valid phone number.')
       .max(15, 'Please enter a valid phone number.')
-      .regex(/^(\+|00)?[1-9]\d{10}$/, 'Please enter a valid phone number.')
 })
 
 type FormData = z.infer<typeof schema>
@@ -63,7 +62,7 @@ const BusinessInformation = (props: Props) => {
    const dispatch = useAppDispatch()
    const { businessRegisterForm } = useAppSelector(state => state.auth)
    const { getAllCountries, getCountryByCode } = useCountry()
-   const {registerBusinessStep2} = useAuth()
+   const { registerBusinessStep2 } = useAuth()
 
    const [isLoading, setIsLoading] = React.useState(false)
    const [countries, setCountries] = React.useState<ShippingCountry[]>([])
@@ -101,26 +100,26 @@ const BusinessInformation = (props: Props) => {
       setIsLoading(true)
       try {
          const country = await getCountryByCode(data.country)
-      const address: Address = {
-         country_id: country?.id!,
-         street_address: data.street_address,
-         street_address_2: data.street_address_2 ?? '',
-         city: data.city,
-         state: data.state,
-         postal_code: data.postal_code
-      }
-      const user: User = {
-         first_name: data.first_name,
-         last_name: data.last_name,
-         email: businessRegisterForm?.email!,
-         provider: 'email',
-         hashed_password: businessRegisterForm?.password!,
-         is_verified: true,
-      }
-      const vendor: Vendor = {
-         business_name: businessRegisterForm?.business_name!,
-      }
-      await registerBusinessStep2(user, address, vendor)
+         const address: Address = {
+            country_id: country?.id!,
+            street_address: data.street_address,
+            street_address_2: data.street_address_2 ?? '',
+            city: data.city,
+            state: data.state,
+            postal_code: data.postal_code
+         }
+         const user: User = {
+            first_name: data.first_name,
+            last_name: data.last_name,
+            email: businessRegisterForm?.email!,
+            provider: 'email',
+            hashed_password: businessRegisterForm?.password!,
+            is_verified: true
+         }
+         const vendor: Vendor = {
+            business_name: businessRegisterForm?.business_name!
+         }
+         await registerBusinessStep2(user, address, vendor)
       } catch (error) {
       } finally {
          setIsLoading(false)

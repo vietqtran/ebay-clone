@@ -4,10 +4,12 @@ import {
    RegisterPersonalCredentials,
    User
 } from '@/types/user'
+import { Vendor } from '@/types/vendor'
 
 interface AuthState {
    currentRegisterForm: 'personal' | 'business'
    user: Omit<User, 'hashed_password'> | null
+   vendor: Vendor | null
    unverifiedUser: Partial<Omit<User, 'hashed_password'>> | null
    businessRegisterForm: Partial<
       RegisterBusinessCredentials & RegisterPersonalCredentials
@@ -22,7 +24,8 @@ const initialState: AuthState = {
    unverifiedUser: null,
    businessRegisterForm: null,
    OTPCountDown: 15,
-   OTPEncrypted: null
+   OTPEncrypted: null,
+   vendor: null
 }
 
 const authSlice = createSlice({
@@ -42,6 +45,9 @@ const authSlice = createSlice({
          action: PayloadAction<Omit<User, 'hashed_password'> | null>
       ) {
          return { ...state, user: action.payload }
+      },
+      setVendor(state, action: PayloadAction<Vendor | null>) {
+         return { ...state, vendor: action.payload }
       },
       setUnverifiedUser(
          state,
@@ -88,6 +94,7 @@ export const {
    setBusinessRegisterForm,
    setOTPCountDown,
    setOTPEncrypted,
-   changeUnverifiedEmail
+   changeUnverifiedEmail,
+   setVendor
 } = authSlice.actions
 export { authSlice }
