@@ -6,11 +6,18 @@ export type User = {
    first_name?: string
    last_name?: string
    provider: AuthProvider
-   role_id?: string
+   role?: UserRole
    avatar_url?: string
    created_at?: Date
    updated_at?: Date
    is_verified?: boolean
+}
+
+export enum UserRole {
+   USER = 'user',
+   ADMIN = 'admin',
+   VENDOR = 'vendor',
+   STAFF = 'staff'
 }
 
 export type LoginCredentials = {

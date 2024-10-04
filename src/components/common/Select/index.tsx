@@ -62,6 +62,7 @@ const Input = React.forwardRef<HTMLSelectElement, InputProps>(
                </div>
                <select
                   ref={selectRef}
+                  name="selectField"
                   onChange={handleChange}
                   disabled={disabled}
                   value={value}
@@ -69,11 +70,9 @@ const Input = React.forwardRef<HTMLSelectElement, InputProps>(
                      'size-full text-sm cursor-pointer disabled:cursor-not-allowed z-0 bg-transparent px-3 pt-[18px] pb-1 focus:outline-none mr-3'
                   )}
                >
-                  <option value="" selected={!value}></option>
+                  <option value=""></option>
                   {options.map(option => (
                      <option
-                        selected={value === option.value}
-                        disabled={disabled}
                         className="text-sm"
                         key={option.id}
                         value={option.value}
