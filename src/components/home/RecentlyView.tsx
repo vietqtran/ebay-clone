@@ -5,10 +5,13 @@ import ProductCard from '../common/Product/ProductCard'
 import React from 'react'
 import { FreeMode } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
+import { Product, ProductView } from '@/hooks/useProduct'
 
-type Props = {}
+type Props = {
+   products: ProductView[]
+}
 
-const RecentlyView = (props: Props) => {
+const RecentlyView = ({ products }: Props) => {
    return (
       <div className="container mx-auto mb-10 w-full max-w-7xl px-5">
          <div className="mb-6 flex w-full items-center justify-between">
@@ -35,48 +38,11 @@ const RecentlyView = (props: Props) => {
                }}
                className="mySwiper relative w-full hover:cursor-grab active:cursor-grabbing"
             >
-               <SwiperSlide>
-                  <ProductCard />
-               </SwiperSlide>
-               <SwiperSlide>
-                  <ProductCard />
-               </SwiperSlide>
-               <SwiperSlide>
-                  <ProductCard />
-               </SwiperSlide>
-               <SwiperSlide>
-                  <ProductCard />
-               </SwiperSlide>
-               <SwiperSlide>
-                  <ProductCard />
-               </SwiperSlide>
-               <SwiperSlide>
-                  <ProductCard />
-               </SwiperSlide>
-               <SwiperSlide>
-                  <ProductCard />
-               </SwiperSlide>
-               <SwiperSlide>
-                  <ProductCard />
-               </SwiperSlide>
-               <SwiperSlide>
-                  <ProductCard />
-               </SwiperSlide>
-               <SwiperSlide>
-                  <ProductCard />
-               </SwiperSlide>
-               <SwiperSlide>
-                  <ProductCard />
-               </SwiperSlide>
-               <SwiperSlide>
-                  <ProductCard />
-               </SwiperSlide>
-               <SwiperSlide>
-                  <ProductCard />
-               </SwiperSlide>
-               <SwiperSlide>
-                  <ProductCard />
-               </SwiperSlide>
+               {products.map(product => (
+                  <SwiperSlide key={product?.product_id}>
+                     <ProductCard product={product} />
+                  </SwiperSlide>
+               ))}
             </Swiper>
          </div>
       </div>

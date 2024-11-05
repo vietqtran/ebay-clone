@@ -1,17 +1,8 @@
-import Sidebar from '@/components/layouts/DashBoard/VendorSidebar'
-import Topbar from '@/components/layouts/DashBoard/VendorTopBar'
+import VendorLayout from '@/components/layouts/DashBoard/VendorLayout'
 import React from 'react'
 
-const VendorLayout = ({ children }: { children: React.ReactNode }) => {
-   return (
-      <div className="flex h-screen">
-         <Sidebar />
-         <div className="flex flex-1 flex-col">
-            <Topbar />
-            {children}
-         </div>
-      </div>
-   )
+const Layout = ({ children }: { children: React.ReactNode }) => {
+   return <VendorLayout>{children}</VendorLayout>
 }
 
-export default VendorLayout
+export default Layout

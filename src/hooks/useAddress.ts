@@ -30,7 +30,7 @@ export const useAddress = () => {
          if (error) {
             throw new Error(error.message)
          }
-         return data
+         return data[0] as Address
       } catch (error) {
          console.log(error)
          return []
