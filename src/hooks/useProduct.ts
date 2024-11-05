@@ -40,6 +40,8 @@ export const useProduct = () => {
    const { uploadMultipleFiles } = useUpload()
    const supabase = createClient()
    const [products, setProducts] = useState<ProductView[]>([])
+   const [loading, setLoading] = useState(false)
+   const [error, setError] = useState<string | null>(null)
 
    useEffect(() => {
       const fetchProducts = async () => {
@@ -171,7 +173,9 @@ export const useProduct = () => {
       try {
          const { data, error } = await supabase
             .from('products')
-            .select('*')
+            .select(
+               '*, product_images(image_url), reviews(*), vendors(*), categories(*), brands(*)'
+            )
             .eq('product_id', product_id)
             .throwOnError()
          if (error) {
@@ -263,6 +267,8 @@ export const useProduct = () => {
       updateProduct,
       getProductById,
       getVariantsByProductId,
-      deleteProduct
+      deleteProduct,
+      loading,
+      error
    }
 }

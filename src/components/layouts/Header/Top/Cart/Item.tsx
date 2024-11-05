@@ -4,9 +4,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
-type Props = {}
+type Props = {
+   item: any
+}
 
-const CartItem = (props: Props) => {
+const CartItem = ({ item }: Props) => {
    return (
       <div className="flex w-full items-start gap-3 whitespace-normal px-4">
          <div className="size-14 flex-shrink-0 overflow-hidden rounded-md border-[1px] border-gray-300">
@@ -27,17 +29,21 @@ const CartItem = (props: Props) => {
                }
                className="mb-1.5 line-clamp-1 w-full text-sm hover:underline"
             >
-               Apple iPhone 11 | 64GB | Black | Unlocked | FaceID | True Tone |
-               82% Batt | Used
+               {item.products.name}
             </Link>
             <div className="flex items-center justify-between">
-               <span className="text-sm font-semibold">4,957,852.50 VND</span>
+               <span className="text-sm font-semibold">
+                  {(
+                     parseInt(item.products.price) * parseInt(item.quantity)
+                  ).toLocaleString('vi-VN')}{' '}
+                  VND
+               </span>
                <span className="whitespace-nowrap text-sm text-[#707070]">
-                  Qty: 2
+                  Qty: {item.quantity}
                </span>
             </div>
             <span className="text-xs font-medium text-[#707070]">
-               + VND 300,000
+               + VND 30,000
             </span>
             <div className="peer flex w-full justify-end text-[#707070]">
                <button
