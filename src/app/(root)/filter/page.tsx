@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/select'
 import { Slider } from '@/components/ui/slider'
 import { Star, ChevronDown } from 'lucide-react'
+import Image from 'next/image'
 
 export default function FilterProductPage() {
    const [priceRange, setPriceRange] = React.useState([0, 1000])
@@ -177,8 +178,10 @@ export default function FilterProductPage() {
                   {products.map(product => (
                      <Card key={product.id}>
                         <CardHeader>
-                           <img
-                              src={product.image}
+                           <Image
+                              width={200}
+                              height={200}
+                              src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/products/${product.image}`}
                               alt={product.name}
                               className="h-48 w-full rounded-md object-cover"
                            />
