@@ -35,7 +35,7 @@ export default function RootLayout({
                <div id="portal"></div>
                <Toaster
                   richColors
-                  position="bottom-right"
+                  position="top-center"
                   expand={false}
                   closeButton
                />

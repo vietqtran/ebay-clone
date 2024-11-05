@@ -1,9 +1,20 @@
 import { ShippingCountry } from '@/types/country'
 import { createClient } from '@/utils/supabase/client'
+import React from 'react'
 import { toast } from 'sonner'
 
 export const useCountry = () => {
    const supabase = createClient()
+   const [countries, setCountries] = React.useState<ShippingCountry[]>([])
+
+   React.useEffect(() => {
+      const fetchCountries = async () => {
+         const countries = await getAllCountries()
+         setCountries(countries)
+      }
+      fetchCountries()
+   }, [])
+
    const fetchCountryData = async (countryCode: string) => {
       const response = await fetch(
          `https://restcountries.com/v3.1/alpha/${countryCode}`
@@ -47,5 +58,5 @@ export const useCountry = () => {
       }
    }
 
-   return { fetchCountryData, getAllCountries, getCountryByCode }
+   return { countries, fetchCountryData, getAllCountries, getCountryByCode }
 }

@@ -1,3 +1,5 @@
+'use client'
+
 import ExploreCategories from './ExploreCategories'
 import HomeSlider from './Slider'
 import LastBanner from './LastBanner'
@@ -7,10 +9,13 @@ import RecentlyView from './RecentlyView'
 import RecommendCategory from './RecommendCategory'
 import RecommendSeller from './RecommendSeller'
 import Searched from './Searched'
+import { useProduct } from '@/hooks/useProduct'
 
 interface Props {}
 
 const HomePage = (props: Props) => {
+   const { products } = useProduct()
+   console.log(products)
    return (
       <div className="w-full">
          <div className="hide-scrollbar flex h-8 w-full items-center justify-start gap-3 overflow-auto whitespace-nowrap px-5 text-xs text-[#555] lg:justify-center">
@@ -28,7 +33,7 @@ const HomePage = (props: Props) => {
             <Link href={'#'}>Sell</Link>
          </div>
          <HomeSlider />
-         <RecentlyView />
+         <RecentlyView products={products} />
          <Searched />
          <ExploreCategories />
          <RecommendSeller />

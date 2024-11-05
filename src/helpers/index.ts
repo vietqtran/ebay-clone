@@ -6,3 +6,7 @@ export const generateOTP = () => {
    }
    return OTP
 }
+
+export const parseImageUrl = (url: string) => {
+   return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${url}`
+}

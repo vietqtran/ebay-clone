@@ -1,16 +1,20 @@
+import { parseImageUrl } from '@/helpers'
+import { Product, ProductView } from '@/hooks/useProduct'
 import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import { twMerge } from 'tailwind-merge'
 
-type Props = {}
+type Props = {
+   product: ProductView
+}
 
-const ProductCard = (props: Props) => {
+const ProductCard = ({ product }: Props) => {
    const [isLiked, setIsLiked] = React.useState(false)
 
    return (
       <Link
-         href={'#'}
+         href={`/product/${product?.product_id}`}
          target="_blank"
          className="flex size-full h-full flex-col justify-between gap-2 sm:gap-4"
       >
@@ -54,22 +58,21 @@ const ProductCard = (props: Props) => {
                className="h-full w-full object-cover"
                width={500}
                height={500}
-               src="/images/product/product-1.png"
+               src={parseImageUrl(product?.product_images[0].image_url)}
                alt=""
             />
          </div>
          <div className="h-10 text-left text-sm">
             <p className="line-clamp-2 whitespace-break-spaces hover:underline">
-               Apple iPhone 11 | 64GB | Black | Unlocked | FaceID | True Tone |
-               82% Batt | Used
+               {product?.name}
             </p>
          </div>
          <div className="flex flex-col items-start gap-1">
             <p className="whitespace-nowrap text-sm font-semibold sm:text-base">
-               4,957,852.50 VND
-            </p>
-            <p className="whitespace-nowrap text-xs font-normal text-[#707070] line-through">
-               3,957,852.50 VND
+               {new Intl.NumberFormat('en-US', {
+                  style: 'currency',
+                  currency: 'VND'
+               }).format(product?.price)}
             </p>
          </div>
       </Link>
