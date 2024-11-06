@@ -146,7 +146,7 @@ export default function CheckoutPageWithCart() {
             <div>
                <Card>
                   <CardHeader>
-                     <CardTitle>Cart Items ({cartItems.length})</CardTitle>
+                     <CardTitle>Cart Items ({cartItems?.length})</CardTitle>
                   </CardHeader>
                   <CardContent>
                      {cartItems?.map((item, index) => (
@@ -190,7 +190,7 @@ export default function CheckoutPageWithCart() {
                                  </p>
                               </div>
                            </div>
-                           {index < cartItems.length - 1 && <Separator />}
+                           {index < cartItems?.length - 1 && <Separator />}
                         </React.Fragment>
                      ))}
                   </CardContent>
@@ -199,7 +199,7 @@ export default function CheckoutPageWithCart() {
                         <div className="flex justify-between font-semibold">
                            <span>Shipping cost</span>
                            <span>
-                              ${(30000 * cartItems.length).toLocaleString()}
+                              ${(30000 * cartItems?.length).toLocaleString()}
                            </span>
                         </div>
                         <div className="flex justify-between font-semibold">

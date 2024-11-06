@@ -74,7 +74,7 @@ export default function CartPage() {
             <div className="md:col-span-2">
                <Card>
                   <CardHeader>
-                     <CardTitle>Cart Items ({cartItems.length})</CardTitle>
+                     <CardTitle>Cart Items ({cartItems?.length})</CardTitle>
                   </CardHeader>
                   <CardContent>
                      {cartItems?.map((item, index) => (
@@ -160,7 +160,7 @@ export default function CartPage() {
                                  </p>
                               </div>
                            </div>
-                           {index < cartItems.length - 1 && <Separator />}
+                           {index < cartItems?.length - 1 && <Separator />}
                         </React.Fragment>
                      ))}
                   </CardContent>
@@ -180,7 +180,7 @@ export default function CartPage() {
                         <div className="flex justify-between">
                            <span>Shipping</span>
                            <span>
-                              ${(cartItems.length * 30000).toLocaleString()}
+                              ${(cartItems?.length * 30000).toLocaleString()}
                            </span>
                         </div>
                         <Separator />
@@ -189,7 +189,7 @@ export default function CartPage() {
                            <span>
                               $
                               {(
-                                 cartItems.length * 30000 +
+                                 cartItems?.length * 30000 +
                                  total
                               ).toLocaleString()}
                            </span>

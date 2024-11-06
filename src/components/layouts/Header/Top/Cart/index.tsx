@@ -77,7 +77,7 @@ const Cart = (props: Props) => {
                <div className="mt-3 flex items-center justify-between border-y-[1px] border-y-[#cfcfcf] bg-[#e6e6e6] p-4">
                   <span className="text-sm font-medium">Total</span>
                   <span className="text-sm font-semibold">
-                     {(total + 30000 * cartItems.length).toLocaleString(
+                     {(total + 30000 * cartItems?.length).toLocaleString(
                         'vi-VN',
                         {
                            style: 'currency',
