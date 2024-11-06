@@ -70,7 +70,7 @@ const Cart = (props: Props) => {
             <div className="absolute right-0 top-[calc(100%+10px)] hidden w-[320px] cursor-default flex-col rounded-lg bg-white py-4 shadow-popup group-hover:flex">
                <h3 className="mb-4 px-4 font-semibold">Shopping cart</h3>
                <SimpleBar style={{ maxHeight: '500px' }}>
-                  {cartItems.map(item => (
+                  {cartItems?.map(item => (
                      <CartItem key={item.id} item={item} />
                   ))}
                </SimpleBar>

@@ -43,7 +43,7 @@ const ShopByCategory = (props: Props) => {
                      {category.title}
                   </h3>
                   <ul className="flex flex-col gap-1">
-                     {category.items.map(item => (
+                     {category?.items?.map(item => (
                         <li key={item.key}>
                            <Link
                               href={'#'}

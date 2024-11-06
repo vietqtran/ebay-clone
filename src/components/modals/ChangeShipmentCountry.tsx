@@ -89,7 +89,7 @@ const ChangeShipmentCountry = ({ handleClose }: Props) => {
                         paddingBottom: '10px'
                      }}
                   >
-                     {countries.map((country: ShippingCountry) => (
+                     {countries?.map((country: ShippingCountry) => (
                         <div
                            onClick={() => {
                               handleSelectCountry(country)

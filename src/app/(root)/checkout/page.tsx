@@ -149,7 +149,7 @@ export default function CheckoutPageWithCart() {
                      <CardTitle>Cart Items ({cartItems.length})</CardTitle>
                   </CardHeader>
                   <CardContent>
-                     {cartItems.map((item, index) => (
+                     {cartItems?.map((item, index) => (
                         <React.Fragment key={item.cart_item_id}>
                            <div className="flex items-center py-4">
                               <Image

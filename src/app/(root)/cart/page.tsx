@@ -54,7 +54,7 @@ export default function CartPage() {
          .update({ quantity: newQuantity })
          .eq('cart_item_id', id)
       setCartItems(
-         cartItems.map(item =>
+         cartItems?.map(item =>
             item.cart_item_id === id
                ? { ...item, quantity: Math.max(1, newQuantity) }
                : item
@@ -77,7 +77,7 @@ export default function CartPage() {
                      <CardTitle>Cart Items ({cartItems.length})</CardTitle>
                   </CardHeader>
                   <CardContent>
-                     {cartItems.map((item, index) => (
+                     {cartItems?.map((item, index) => (
                         <React.Fragment key={item.cart_item_id}>
                            <div className="flex items-center py-4">
                               <Image

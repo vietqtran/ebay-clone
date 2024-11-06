@@ -105,7 +105,7 @@ export default function FilterProductPage() {
                               'Fashion',
                               'Home & Garden',
                               'Sports'
-                           ].map(category => (
+                           ]?.map(category => (
                               <div key={category} className="flex items-center">
                                  <Checkbox id={category} />
                                  <Label htmlFor={category} className="ml-2">
@@ -175,7 +175,7 @@ export default function FilterProductPage() {
                   </Select>
                </div>
                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {products.map(product => (
+                  {products?.map(product => (
                      <Card key={product.id}>
                         <CardHeader>
                            <Image

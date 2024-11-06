@@ -119,7 +119,7 @@ export const useProduct = () => {
          )
 
          await supabase.from('product_images').insert(
-            uploadResults.map(result => ({
+            uploadResults?.map(result => ({
                product_id: data[0].product_id,
                image_url: result.data?.fullPath
             }))

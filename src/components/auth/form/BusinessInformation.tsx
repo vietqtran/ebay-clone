@@ -150,7 +150,7 @@ const BusinessInformation = (props: Props) => {
                   disabled
                   placeholder="Where is your business registered?"
                   value={form.watch('country')}
-                  options={countries.map((country: ShippingCountry) => ({
+                  options={countries?.map((country: ShippingCountry) => ({
                      label: country.name,
                      value: country.code,
                      id: country.code

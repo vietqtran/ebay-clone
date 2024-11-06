@@ -38,7 +38,7 @@ const RecentlyView = ({ products }: Props) => {
                }}
                className="mySwiper relative w-full hover:cursor-grab active:cursor-grabbing"
             >
-               {products.map(product => (
+               {products?.map(product => (
                   <SwiperSlide key={product?.product_id}>
                      <ProductCard product={product} />
                   </SwiperSlide>

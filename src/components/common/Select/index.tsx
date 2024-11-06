@@ -71,7 +71,7 @@ const Input = React.forwardRef<HTMLSelectElement, InputProps>(
                   )}
                >
                   <option value=""></option>
-                  {options.map(option => (
+                  {options?.map(option => (
                      <option
                         className="text-sm"
                         key={option.id}

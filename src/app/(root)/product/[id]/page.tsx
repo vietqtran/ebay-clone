@@ -181,7 +181,7 @@ export default function EnhancedEbayProductDetails() {
                </div>
                {images.length > 1 && (
                   <div className="flex justify-center space-x-2">
-                     {images.map((_: any, index: number) => (
+                     {images?.map((_: any, index: number) => (
                         <Button
                            key={index}
                            variant={

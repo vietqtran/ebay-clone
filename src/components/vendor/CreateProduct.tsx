@@ -123,7 +123,7 @@ const CreateProduct = ({ isOpen, setIsOpen, emitProduct }: Props) => {
    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const files = e.target.files
       if (files) {
-         const newImages = Array.from(files).map(file =>
+         const newImages = Array.from(files)?.map(file =>
             URL.createObjectURL(file)
          )
          setImages(newImages)
@@ -153,7 +153,7 @@ const CreateProduct = ({ isOpen, setIsOpen, emitProduct }: Props) => {
                         <SelectValue placeholder="Select brand" />
                      </SelectTrigger>
                      <SelectContent>
-                        {brands.map(brand => (
+                        {brands?.map(brand => (
                            <SelectItem
                               key={brand.brand_id}
                               value={brand.brand_id}
@@ -173,7 +173,7 @@ const CreateProduct = ({ isOpen, setIsOpen, emitProduct }: Props) => {
                         <SelectValue placeholder="Select category" />
                      </SelectTrigger>
                      <SelectContent>
-                        {categories.map(category => (
+                        {categories?.map(category => (
                            <SelectItem
                               key={category.category_id}
                               value={category.category_id}
@@ -236,7 +236,7 @@ const CreateProduct = ({ isOpen, setIsOpen, emitProduct }: Props) => {
                   <h3 className="text-lg font-semibold mb-2">
                      Product Variants
                   </h3>
-                  {variants.map((variant, index) => (
+                  {variants?.map((variant, index) => (
                      <div
                         key={index}
                         className="grid grid-cols-4 items-center gap-4 mb-2"
@@ -290,7 +290,7 @@ const CreateProduct = ({ isOpen, setIsOpen, emitProduct }: Props) => {
                   />
                </div>
                <div className="flex flex-wrap gap-4">
-                  {images.map((image, index) => (
+                  {images?.map((image, index) => (
                      <div className="relative" key={index}>
                         <div
                            onClick={() => handleRemoveImage(index)}

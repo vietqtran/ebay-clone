@@ -150,7 +150,7 @@ export default function EditProductForm({
                            <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                           {brands.map(brand => (
+                           {brands?.map(brand => (
                               <SelectItem
                                  key={brand.brand_id}
                                  value={brand.brand_id}
@@ -174,7 +174,7 @@ export default function EditProductForm({
                            <SelectValue defaultValue={product?.category_id} />
                         </SelectTrigger>
                         <SelectContent>
-                           {categories.map(category => (
+                           {categories?.map(category => (
                               <SelectItem
                                  key={category.category_id}
                                  value={category.category_id}

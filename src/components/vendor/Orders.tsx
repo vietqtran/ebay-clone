@@ -153,7 +153,7 @@ export default function OrdersManagement() {
                </TableRow>
             </TableHeader>
             <TableBody>
-               {filteredOrders.map(order => (
+               {filteredOrders?.map(order => (
                   <TableRow key={order.id}>
                      <TableCell>{order.id}</TableCell>
                      <TableCell>{order.customer}</TableCell>
@@ -214,7 +214,7 @@ export default function OrdersManagement() {
                               <SelectValue placeholder="Select status" />
                            </SelectTrigger>
                            <SelectContent>
-                              {orderStatuses.map(status => (
+                              {orderStatuses?.map(status => (
                                  <SelectItem key={status} value={status}>
                                     {status}
                                  </SelectItem>
@@ -225,7 +225,7 @@ export default function OrdersManagement() {
                      <div className="grid grid-cols-4 items-center gap-4">
                         <Label className="text-right">Items</Label>
                         <div className="col-span-3">
-                           {currentOrder.items.map((item, index) => (
+                           {currentOrder?.items?.map((item, index) => (
                               <div key={index} className="flex justify-between">
                                  <span>
                                     {item.name} (x{item.quantity})
