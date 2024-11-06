@@ -42,7 +42,7 @@ export default function CartPage() {
    }, [])
 
    const total = useMemo(() => {
-      return cartItems.reduce((acc, item) => {
+      return cartItems?.reduce((acc, item) => {
          return acc + parseInt(item.products.price) * parseInt(item.quantity)
       }, 0)
    }, [cartItems])

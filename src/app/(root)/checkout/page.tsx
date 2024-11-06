@@ -54,7 +54,7 @@ export default function CheckoutPageWithCart() {
    }, [])
 
    const total = useMemo(() => {
-      return cartItems.reduce((acc, item) => {
+      return cartItems?.reduce((acc, item) => {
          return acc + item.products.price * item.quantity + 30000
       }, 0)
    }, [cartItems])
